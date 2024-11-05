@@ -81,11 +81,12 @@ public abstract class BaseDbContext(IConfiguration configuration) : DbContext
 
   public virtual void AppendEntity<T>(T model) where T : BaseDbEntity
   {
-    Set<T>().Add(model);
+    AppendEntityAsync(model).Wait();
   }
 
   public virtual async Task AppendEntityAsync<T>(T model) where T : BaseDbEntity
   {
+    model.CriadoEm = DateTime.Now;
     await Set<T>().AddAsync(model);
   }
 
@@ -100,11 +101,12 @@ public abstract class BaseDbContext(IConfiguration configuration) : DbContext
   public virtual void UpdateEntity<T>(T model) where T : BaseDbEntity
   {
     Entry(model).State = EntityState.Modified;
+    model.AlteradoEm = DateTime.Now;
   }
 
   public virtual async Task UpdateAndSaveEntityAsync<T>(T model) where T : BaseDbEntity
   {
-    UpdateEntity<T>(model);
+    UpdateEntity(model);
     await SalvarAlteracoesAsync();
   }
 

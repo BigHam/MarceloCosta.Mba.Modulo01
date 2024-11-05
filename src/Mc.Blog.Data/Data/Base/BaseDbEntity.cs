@@ -9,11 +9,4 @@ public abstract class BaseDbEntity
   public DateTime? AlteradoEm { get; set; }
   public bool Excluido { get; set; }
   public DateTime? ExcluidoEm { get; set; }
-
-
-  public virtual void Novo()
-  {
-    CriadoEm = DateTime.Now;
-    Excluido = false;
-  }
 }

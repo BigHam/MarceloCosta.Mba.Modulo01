@@ -7,8 +7,7 @@ O objetivo principal desenvolver uma aplicação de blog que permite aos usuári
 Descreva livremente mais detalhes do seu projeto aqui.
 
 ### **Autor(es)**
-- **Nome 1**
-- **Nome 2**
+- Marcelo da Cunha Costa
 
 ## **2. Proposta do Projeto**
 
@@ -67,8 +66,8 @@ A estrutura do projeto é organizada da seguinte forma:
 ### **Passos para Execução**
 
 1. **Clone o Repositório:**
-   - `git clone https://github.com/seu-usuario/nome-do-repositorio.git`
-   - `cd nome-do-repositorio`
+   - `git clone https://github.com/BigHam/MarceloCosta.Mba.Modulo01.git`
+   - `cd MarceloCosta.Mba.Modulo01`
 
 2. **Configuração do Banco de Dados:**
    - No arquivo `appsettings.json`, configure a string de conexão do SQL Server.
