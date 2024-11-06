@@ -1,4 +1,5 @@
-﻿using Mc.Blog.Web.StartupConf;
+﻿using Mc.Blog.Data.Compartilhado.StartupConf;
+using Mc.Blog.Web.StartupConf;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,11 +28,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

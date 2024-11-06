@@ -3,6 +3,7 @@
 using AutoMapper;
 
 using Mc.Blog.Data.Data.Base;
+using Mc.Blog.Data.Data.Domains.Base;
 using Mc.Blog.Data.Data.ViewModels.Base;
 using Mc.Blog.Data.Services.Interfaces.Base;
 

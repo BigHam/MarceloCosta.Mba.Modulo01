@@ -1,12 +1,16 @@
 ﻿using Mc.Blog.Data.Data;
 
-namespace Mc.Blog.Api.StartupConf;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Mc.Blog.Data.Compartilhado.StartupConf;
 
 
 public static class ContextConfiguration
 {
   public static void AddDbConfiguration(this WebApplicationBuilder builder)
   {
+    builder.Services.AddDatabaseDeveloperPageExceptionFilter();
     builder.Services.AddDbContext<CtxDadosMsSql>();
   }
 }

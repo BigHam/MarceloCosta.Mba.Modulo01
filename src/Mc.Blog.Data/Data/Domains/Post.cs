@@ -1,4 +1,4 @@
-﻿using Mc.Blog.Data.Data.Base;
+﻿using Mc.Blog.Data.Data.Domains.Base;
 
 namespace Mc.Blog.Data.Data.Domains;
 

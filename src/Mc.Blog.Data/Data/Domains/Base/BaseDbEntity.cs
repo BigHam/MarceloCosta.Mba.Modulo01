@@ -1,4 +1,4 @@
-﻿namespace Mc.Blog.Data.Data.Base;
+﻿namespace Mc.Blog.Data.Data.Domains.Base;
 
 public abstract class BaseDbEntity
 {

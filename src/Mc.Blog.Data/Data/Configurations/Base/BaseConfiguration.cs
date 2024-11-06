@@ -1,14 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Mc.Blog.Data.Data.Domains.Base;
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Mc.Blog.Data.Data.Base;
+namespace Mc.Blog.Data.Data.Configurations.Base;
 
 public abstract class BaseConfiguration<TBaseDbEntity> : IEntityTypeConfiguration<TBaseDbEntity> where TBaseDbEntity : BaseDbEntity
 {
   void IEntityTypeConfiguration<TBaseDbEntity>.Configure(EntityTypeBuilder<TBaseDbEntity> builder)
   {
     // Filtro Global ************************************
-    // Defina aqui algum filtro global
+    // Defina aqui seu filtro global
     builder.HasQueryFilter(c => !c.Excluido);
     // **************************************************
 

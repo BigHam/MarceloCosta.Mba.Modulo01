@@ -1,4 +1,4 @@
-﻿using Mc.Blog.Data.Data.Base;
+﻿using Mc.Blog.Data.Data.Configurations.Base;
 using Mc.Blog.Data.Data.Domains;
 
 using Microsoft.EntityFrameworkCore;

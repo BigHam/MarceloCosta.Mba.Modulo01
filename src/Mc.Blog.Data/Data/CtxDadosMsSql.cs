@@ -10,7 +10,8 @@ public class CtxDadosMsSql(IConfiguration configuration) : BaseDbContext(configu
 {
   protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
   {
-    optionsBuilder.UseSqlServer(GetConnectionString("dados"), opt => opt.EnableRetryOnFailure());
+    //optionsBuilder.UseSqlite(GetConnectionString("StrConSqlite"));
+    optionsBuilder.UseSqlServer(GetConnectionString("StrConMsSql"), opt => opt.EnableRetryOnFailure());
     optionsBuilder.EnableDetailedErrors();
     optionsBuilder.EnableSensitiveDataLogging();
   }

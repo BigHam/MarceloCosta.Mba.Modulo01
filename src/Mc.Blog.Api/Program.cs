@@ -1,4 +1,5 @@
 ﻿using Mc.Blog.Api.StartupConf;
+using Mc.Blog.Data.Compartilhado.StartupConf;
 
 var builder = WebApplication.CreateBuilder(args);
 

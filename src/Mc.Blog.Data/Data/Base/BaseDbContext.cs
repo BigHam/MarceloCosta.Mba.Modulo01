@@ -1,5 +1,7 @@
 ﻿using System.Linq.Expressions;
 
+using Mc.Blog.Data.Data.Domains.Base;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
