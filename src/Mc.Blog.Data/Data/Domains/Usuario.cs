@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Mc.Blog.Data.Data.Domains;
 
-public class Usuario : IdentityUser
+public class Usuario : IdentityUser<int>
 {
   public DateTime CriadoEm { get; set; }
 

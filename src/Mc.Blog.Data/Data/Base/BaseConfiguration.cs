@@ -27,18 +27,23 @@ public abstract class BaseConfiguration<TBaseDbEntity> : IEntityTypeConfiguratio
   {
     builder.Property(c => c.CriadoEm)
       .HasColumnName("criado_em")
+      .HasColumnType("datetime2")
       .IsRequired();
 
     builder.Property(c => c.AlteradoEm)
       .HasColumnName("alterado_em")
+      .HasColumnType("datetime2")
       .IsRequired(false);
 
     builder.Property(c => c.Excluido)
       .HasColumnName("excluido")
+      .HasColumnType("bit")
+      .HasDefaultValue(false)
       .IsRequired();
 
     builder.Property(c => c.ExcluidoEm)
       .HasColumnName("excluido_em")
+      .HasColumnType("datetime2")
       .IsRequired(false);
   }
 

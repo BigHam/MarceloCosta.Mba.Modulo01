@@ -6,7 +6,7 @@ public class Comentario : BaseDbEntity
 {
   public string Conteudo { get; set; }
   public int PostId { get; set; }
-  public string UsuarioId { get; set; }
+  public int UsuarioId { get; set; }
 
 
   public virtual Post Post { get; set; }

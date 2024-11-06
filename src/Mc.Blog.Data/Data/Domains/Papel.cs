@@ -5,11 +5,8 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Mc.Blog.Data.Data.Domains;
 
-public class Papel : IdentityRole
+public class Papel : IdentityRole<int>
 {
-  [MaxLength(300)]
-  public string Nome { get; set; }
-
   [DefaultValue(true)]
   [Required]
   public bool Ativo { get; set; }

@@ -34,7 +34,7 @@ public class ComentarioConfiguration : BaseConfiguration<Comentario>
 
     builder.Property(c => c.UsuarioId)
       .HasColumnName("id_usuario")
-      .HasColumnType("varchar(450)")
+      .HasColumnType("int")
       .IsRequired();
   }
 
