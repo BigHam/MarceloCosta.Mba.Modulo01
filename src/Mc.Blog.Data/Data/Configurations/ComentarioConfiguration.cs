@@ -52,7 +52,7 @@ public class ComentarioConfiguration : BaseConfiguration<Comentario>
       .HasForeignKey(d => d.PostId)
       .HasConstraintName("fk_comentarios_x_post")
       .OnDelete(DeleteBehavior.Restrict);
-    builder.HasIndex(c => c.UsuarioId, "idx_fk_comentarios_x_post");
+    builder.HasIndex(c => c.PostId, "idx_fk_comentarios_x_post");
   }
 
 }

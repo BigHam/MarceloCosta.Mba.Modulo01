@@ -1,18 +1,11 @@
 ﻿using System.Text;
 
+using Mc.Blog.Data.Data.Domains;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Mc.Blog.Api.StartupConf;
-
-
-public class TokenSettings
-{
-  public string Secret { get; set; }
-  public int ExpiracaoHoras { get; set; }
-  public string Emissor { get; set; }
-  public string ValidoEm { get; set; }
-}
 
 
 public static class TokenConfiguration
@@ -22,7 +15,6 @@ public static class TokenConfiguration
     var tokenSection = builder.Configuration.GetSection("TokenSettings");
     builder.Services.Configure<TokenSettings>(tokenSection);
     var settings = tokenSection.Get<TokenSettings>();
-
 
     builder.Services.AddAuthentication(options =>
     {

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Mc.Blog.Data.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class inicialização : Migration
+    public partial class Inicializacao : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -47,13 +47,40 @@ namespace Mc.Blog.Data.Data.Migrations
                     phone_number = table.Column<string>(type: "varchar(15)", nullable: true),
                     phone_number_confirmed = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     two_factor_enabled = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    lockout_end = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    lockout_end = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
                     lockout_enabled = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    access_failed_count = table.Column<int>(type: "int", nullable: false)
+                    access_failed_count = table.Column<int>(type: "int", nullable: false, defaultValue: 0)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_usuarios", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "usuarios_direitos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_usuarios_direitos", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "usuarios_papeis",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    RoleId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_usuarios_papeis", x => new { x.UserId, x.RoleId });
                 });
 
             migrationBuilder.CreateTable(
@@ -115,17 +142,12 @@ namespace Mc.Blog.Data.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "idx_fk_comentarios_x_post",
                 table: "comentarios",
-                column: "id_usuario");
+                column: "id_post");
 
             migrationBuilder.CreateIndex(
                 name: "idx_fk_comentarios_x_usuario",
                 table: "comentarios",
                 column: "id_usuario");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_comentarios_id_post",
-                table: "comentarios",
-                column: "id_post");
 
             migrationBuilder.CreateIndex(
                 name: "idx_fk_posts_x_usuario",
@@ -141,6 +163,12 @@ namespace Mc.Blog.Data.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "papeis");
+
+            migrationBuilder.DropTable(
+                name: "usuarios_direitos");
+
+            migrationBuilder.DropTable(
+                name: "usuarios_papeis");
 
             migrationBuilder.DropTable(
                 name: "posts");

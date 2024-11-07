@@ -1,9 +1,11 @@
 ﻿using Mc.Blog.Data.Data;
 using Mc.Blog.Data.Data.Domains;
 
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Mc.Blog.Web.StartupConf;
+namespace Mc.Blog.Data.Compartilhado.StartupConf;
 
 
 public static class IdentityConfiguration

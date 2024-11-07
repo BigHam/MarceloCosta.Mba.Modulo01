@@ -1,4 +1,5 @@
 ﻿using Mc.Blog.Data.Compartilhado.StartupConf;
+using Mc.Blog.Data.Data.Seed;
 using Mc.Blog.Web.StartupConf;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,11 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.AddNativeInjectorConfiguration();
 builder.AddDbConfiguration();
 builder.AddIdentityConfiguration();
-
-
-
 
 
 
@@ -31,5 +30,9 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.UseLocalizationPtBr();
+
+app.UseDbMigrationHelper();
 
 app.Run();

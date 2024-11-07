@@ -6,4 +6,12 @@ namespace Mc.Blog.Data.Data.Seed.Base;
 public abstract class SeedEntityBase<TContext, TDbEntity> where TContext : BaseDbContext where TDbEntity : BaseDbEntity, new()
 {
 
+
+
+
+
+  public virtual void AdicionarItem(TDbEntity entidade)
+  {
+
+  }
 }

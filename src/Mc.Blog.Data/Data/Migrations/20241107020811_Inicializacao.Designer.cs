@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Mc.Blog.Data.Data.Migrations
 {
     [DbContext(typeof(CtxDadosMsSql))]
-    [Migration("20241106004157_inicialização")]
-    partial class inicialização
+    [Migration("20241107020811_Inicializacao")]
+    partial class Inicializacao
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -69,9 +69,7 @@ namespace Mc.Blog.Data.Data.Migrations
                     b.HasKey("Id")
                         .HasName("pk_comentarios");
 
-                    b.HasIndex("PostId");
-
-                    b.HasIndex(new[] { "UsuarioId" }, "idx_fk_comentarios_x_post");
+                    b.HasIndex(new[] { "PostId" }, "idx_fk_comentarios_x_post");
 
                     b.HasIndex(new[] { "UsuarioId" }, "idx_fk_comentarios_x_usuario");
 
@@ -170,7 +168,9 @@ namespace Mc.Blog.Data.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AccessFailedCount")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
+                        .HasDefaultValue(0)
                         .HasColumnName("access_failed_count");
 
                     b.Property<bool>("Ativo")
@@ -204,7 +204,6 @@ namespace Mc.Blog.Data.Data.Migrations
                         .HasColumnName("lockout_enabled");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
-                        .IsRequired()
                         .HasColumnType("datetimeoffset")
                         .HasColumnName("lockout_end");
 
@@ -252,6 +251,41 @@ namespace Mc.Blog.Data.Data.Migrations
                         .HasName("pk_usuarios");
 
                     b.ToTable("usuarios", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("usuarios_direitos", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.ToTable("usuarios_papeis", (string)null);
                 });
 
             modelBuilder.Entity("Mc.Blog.Data.Data.Domains.Comentario", b =>

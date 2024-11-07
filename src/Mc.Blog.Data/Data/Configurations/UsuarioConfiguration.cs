@@ -97,7 +97,7 @@ public class SecUserConfiguration : IEntityTypeConfiguration<Usuario>
     builder.Property(c => c.LockoutEnd)
       .HasColumnName("lockout_end")
       .HasColumnType("datetimeoffset")
-      .IsRequired();
+      .IsRequired(false);
 
     builder.Property(c => c.LockoutEnabled)
       .HasColumnName("lockout_enabled")
@@ -108,6 +108,7 @@ public class SecUserConfiguration : IEntityTypeConfiguration<Usuario>
     builder.Property(c => c.AccessFailedCount)
       .HasColumnName("access_failed_count")
       .HasColumnType("int")
+      .HasDefaultValue(0)
       .IsRequired();
   }
 }
