@@ -12,7 +12,7 @@ public static class IdentityConfiguration
 {
   public static WebApplicationBuilder AddIdentityConfiguration(this WebApplicationBuilder builder)
   {
-    builder.Services.AddDefaultIdentity<Ator>(options =>
+    builder.Services.AddDefaultIdentity<Autor>(options =>
     {
       // Opções de Validação da Senha
       options.Password.RequireDigit = false;
@@ -33,7 +33,7 @@ public static class IdentityConfiguration
 
       // Opções de Validação da Conta
       options.SignIn.RequireConfirmedAccount = true;
-    }).AddRoles<IdentityRole>()
+    }).AddRoles<IdentityRole<int>>()
       .AddErrorDescriber<MensagensPtBr>()
       .AddEntityFrameworkStores<CtxDadosMsSql>();
 

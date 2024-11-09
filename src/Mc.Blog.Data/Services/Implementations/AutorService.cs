@@ -16,12 +16,12 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Mc.Blog.Data.Services.Implementations;
 
-public class UsuarioService(
+public class AutorService(
   CtxDadosMsSql contexto,
-  SignInManager<Ator> signInManager,
-  UserManager<Ator> userManager,
-  RoleManager<IdentityRole> roleManager,
-  IOptions<TokenSettings> _tokenSettings) : IUsuarioService
+  SignInManager<Autor> signInManager,
+  UserManager<Autor> userManager,
+  RoleManager<IdentityRole<int>> roleManager,
+  IOptions<TokenSettings> _tokenSettings) : IAutorService
 {
   public CtxDadosMsSql Contexto { get; } = contexto;
 
@@ -59,7 +59,6 @@ public class UsuarioService(
     return new UnauthorizedObjectResult("Tentativa de acesso negada.");
   }
 
-
   public async Task<ObjectResult> LoginApiAsync(LoginVm login)
   {
     var retorno = await LoginAsync(login);
@@ -72,7 +71,7 @@ public class UsuarioService(
 
   public async Task<ObjectResult> RegistrarAsync(RegistroVm registro)
   {
-    var retorno = await userManager.CreateAsync(new Ator(registro.NomeUsuario, registro.Email), registro.Senha);
+    var retorno = await userManager.CreateAsync(new Autor(registro.NomeUsuario, registro.Email), registro.Senha);
     if (retorno.Succeeded)
     {
       var user = await userManager.FindByEmailAsync(registro.Email);
@@ -82,7 +81,6 @@ public class UsuarioService(
 
       return new CreatedResult();
     }
-
     return new BadRequestObjectResult($"Não foi possível registrar o usuário informado ({GetIdentityResultErros(retorno.Errors)})");
   }
 
@@ -94,31 +92,31 @@ public class UsuarioService(
     return string.Join(Environment.NewLine, mensagens);
   }
 
-  private static long ToUnixEpochDate(DateTime date) =>
-    (long)Math.Round((date.ToUniversalTime() - new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)).TotalSeconds);
-
+  //private static long ToUnixEpochDate(DateTime date) =>
+  //  (long)Math.Round((date.ToUniversalTime() - new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)).TotalSeconds);
 
   private async Task<string> GerarJwt(string email)
   {
-    var user = await userManager.FindByEmailAsync(email);
-    return CodificarToken(await ObterClaimsUsuario(user));
+    var autorLogado = await userManager.FindByEmailAsync(email);
+    return CodificarToken(await ObterClaimsUsuario(autorLogado));
   }
 
-  private async Task<ClaimsIdentity> ObterClaimsUsuario(Ator user)
+  private async Task<ClaimsIdentity> ObterClaimsUsuario(Autor autor)
   {
-    var claims = await userManager.GetClaimsAsync(user);
-    claims.Add(new Claim(JwtRegisteredClaimNames.Sub, user.UserName));
+    var claims = await userManager.GetClaimsAsync(autor);
+    claims.Add(new Claim(JwtRegisteredClaimNames.Sub, autor.Id.ToString()));
+    claims.Add(new Claim(JwtRegisteredClaimNames.UniqueName, autor.UserName));
     claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
     claims.Add(new Claim(JwtRegisteredClaimNames.Iat, new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64));
-    claims.Add(new Claim("UserId", user.Id.ToString()));
-    claims.Add(new Claim("DisplayName", user.UserName));
-    claims.Add(new Claim("Email", user.Email));
+    claims.Add(new Claim("AutorId", autor.Id.ToString()));
+    claims.Add(new Claim("AutorName", autor.NomeCompleto));
+    claims.Add(new Claim("AutorEmail", autor.Email));
 
     //claims.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
     //claims.Add(new Claim(JwtRegisteredClaimNames.UniqueName, user.Email));
     //claims.Add(new Claim(JwtRegisteredClaimNames.Nbf, new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds().ToString()));
 
-    var roleList = await userManager.GetRolesAsync(user);
+    var roleList = await userManager.GetRolesAsync(autor);
     foreach (var userRole in roleList)
     {
       claims.Add(new Claim("role", userRole));

@@ -9,9 +9,9 @@ namespace Mc.Blog.Api.Controllers
   [AllowAnonymous]
   [ApiController]
   [Route("api/[controller]")]
-  public class AutenticacaoController(IUsuarioService usuarioService) : Controller
+  public class AutenticacaoController(IAutorService autorService) : Controller
   {
-    private readonly IUsuarioService _usuarioService = usuarioService;
+    private readonly IAutorService _autorService = autorService;
 
     [HttpPost("login")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -23,7 +23,7 @@ namespace Mc.Blog.Api.Controllers
       if (!ModelState.IsValid)
         return ValidationProblem(ModelState);
 
-      return await _usuarioService.LoginApiAsync(loginUser);
+      return await _autorService.LoginApiAsync(loginUser);
     }
 
     [HttpPost("registrar")]
@@ -35,7 +35,7 @@ namespace Mc.Blog.Api.Controllers
       if (!ModelState.IsValid)
         return ValidationProblem(ModelState);
 
-      return await _usuarioService.RegistrarAsync(registro);
+      return await _autorService.RegistrarAsync(registro);
     }
   }
 }

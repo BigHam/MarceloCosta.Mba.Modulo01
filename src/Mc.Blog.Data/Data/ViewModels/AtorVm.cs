@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Mc.Blog.Data.Data.ViewModels;
 
-public class AtorVm : IdentityUser<string>
+public class AutorVm : IdentityUser<int>
 {
   public DateTime CriadoEm { get; set; }
 

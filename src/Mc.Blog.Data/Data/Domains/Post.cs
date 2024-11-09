@@ -14,10 +14,10 @@ public class Post : BaseDbEntity
   [StringLength(2000, ErrorMessage = "O campo {0} precisa estar entre {2} e {1} caracteres.", MinimumLength = 2)]
   public string Conteudo { get; set; }
 
-  public string AtorId { get; set; }
+  public int AutorId { get; set; }
 
 
 
-  public virtual Ator Ator { get; set; }
+  public virtual Autor Autor { get; set; }
   public virtual List<Comentario> Comentarios { get; set; }
 }

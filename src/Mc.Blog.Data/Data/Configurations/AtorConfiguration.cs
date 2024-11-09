@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Mc.Blog.Data.Data.Configurations;
 
-public class AtorConfiguration : IEntityTypeConfiguration<Ator>
+public class AutorConfiguration : IEntityTypeConfiguration<Autor>
 {
-  void IEntityTypeConfiguration<Ator>.Configure(EntityTypeBuilder<Ator> builder)
+  void IEntityTypeConfiguration<Autor>.Configure(EntityTypeBuilder<Autor> builder)
   {
     //const string tabela = "AspNetUsers";
 
@@ -15,7 +15,7 @@ public class AtorConfiguration : IEntityTypeConfiguration<Ator>
 
     builder.Property(e => e.Id)
       .HasColumnName("id")
-      .HasColumnType("varchar(50)")
+      //.HasColumnType("varchar(50)")
       .IsRequired();
 
     builder.HasKey(e => e.Id);

@@ -2,7 +2,7 @@
 
 namespace Mc.Blog.Data.Data.Domains;
 
-public class Ator : IdentityUser<string>
+public class Autor : IdentityUser<int>
 {
   public DateTime CriadoEm { get; set; }
 
@@ -14,11 +14,11 @@ public class Ator : IdentityUser<string>
   public virtual List<Comentario> Comentarios { get; set; }
 
 
-  public Ator()
+  public Autor()
   {
   }
 
-  public Ator(string username, string email)
+  public Autor(string username, string email)
   {
     CriadoEm = DateTime.Now;
     UserName = username;
@@ -31,7 +31,7 @@ public class Ator : IdentityUser<string>
     Ativo = true;
   }
 
-  public Ator(string id, string username, string email)
+  public Autor(int id, string username, string email)
   {
     Id = id;
     CriadoEm = DateTime.Now;

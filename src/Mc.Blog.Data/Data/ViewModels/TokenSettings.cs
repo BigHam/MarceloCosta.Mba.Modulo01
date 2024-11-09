@@ -1,4 +1,4 @@
-﻿namespace Mc.Blog.Data.Data.Domains;
+﻿namespace Mc.Blog.Data.Data.ViewModels;
 
 public class TokenSettings
 {

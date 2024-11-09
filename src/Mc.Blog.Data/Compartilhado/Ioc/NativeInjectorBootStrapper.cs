@@ -16,7 +16,7 @@ public class NativeInjectorBootStrapper
 
 
     services.AddScoped<IUserIdentityService, UserIdentityService>();
-    services.AddScoped<IUsuarioService, UsuarioService>();
+    services.AddScoped<IAutorService, AutorService>();
     services.AddScoped<IPostService, PostService>();
     services.AddScoped<IComentarioService, ComentarioService>();
 

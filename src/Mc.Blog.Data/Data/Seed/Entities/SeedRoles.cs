@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Mc.Blog.Data.Data.Seed.Entities
 {
@@ -6,32 +7,36 @@ namespace Mc.Blog.Data.Data.Seed.Entities
   {
     public static async Task SeedRoleEntity(this CtxDadosMsSql context)
     {
-      if (context.Set<IdentityRole>().Any())
+      if (context.Set<IdentityRole<int>>().Any())
         return;
 
-      await context.Set<IdentityRole>().AddAsync(new IdentityRole
+      await context.Set<IdentityRole<int>>().AddAsync(new IdentityRole<int>
       {
-        Id = DbMigrationHelper.MD5Hash("1"),
-        Name = "Administrador"
+        Id = 1,
+        Name = "Administrador",
+        NormalizedName = "ADMINISTRADOR",
+        ConcurrencyStamp = Guid.NewGuid().ToString("D")
       });
 
-      await context.Set<IdentityRole>().AddAsync(new IdentityRole
+      await context.Set<IdentityRole<int>>().AddAsync(new IdentityRole<int>
       {
-        Id = DbMigrationHelper.MD5Hash("2"),
-        Name = "Usuario"
+        Id = 2,
+        Name = "Usuario",
+        NormalizedName = "USUARIO",
+        ConcurrencyStamp = Guid.NewGuid().ToString("D")
       });
 
-      await context.SaveChangesAsync();
+      //await context.SaveChangesAsync();
 
-      //var executionStrategy = context.Database.CreateExecutionStrategy();
-      //executionStrategy.Execute(() =>
-      //{
-      //  using var transaction = context.Database.BeginTransaction();
-      //  context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [dbo].[papeis] ON");
-      //  context.SaveChanges();
-      //  context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [dbo].[papeis] OFF");
-      //  transaction.Commit();
-      //});
+      var executionStrategy = context.Database.CreateExecutionStrategy();
+      executionStrategy.Execute(() =>
+      {
+        using var transaction = context.Database.BeginTransaction();
+        context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [dbo].[AspNetRoles] ON");
+        context.SaveChanges();
+        context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [dbo].[AspNetRoles] OFF");
+        transaction.Commit();
+      });
     }
   }
 }

@@ -7,6 +7,8 @@ namespace Mc.Blog.Data.Data.Configurations.Base;
 
 public abstract class BaseConfiguration<TBaseDbEntity> : IEntityTypeConfiguration<TBaseDbEntity> where TBaseDbEntity : BaseDbEntity
 {
+  public abstract string TableName { get; }
+
   void IEntityTypeConfiguration<TBaseDbEntity>.Configure(EntityTypeBuilder<TBaseDbEntity> builder)
   {
     // Filtro Global ************************************
@@ -24,9 +26,21 @@ public abstract class BaseConfiguration<TBaseDbEntity> : IEntityTypeConfiguratio
     ConfigureHasData(builder);
   }
 
-
   private void ConfigureEntityInternal(EntityTypeBuilder<TBaseDbEntity> builder)
   {
+    //const string tabela = TableName;
+
+    builder.ToTable(TableName);
+
+    builder.Property(e => e.Id)
+      .HasColumnName("id")
+      .HasColumnType("int")
+      .IsRequired();
+
+    builder.HasKey(e => e.Id)
+      .HasName($"pk_{TableName}");
+
+
     builder.Property(c => c.CriadoEm)
       .HasColumnName("criado_em")
       .HasColumnType("datetime2")

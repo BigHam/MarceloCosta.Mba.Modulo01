@@ -13,7 +13,7 @@ public class AutoMapperEntityProfile : Profile
 
   private void CadastroMapper()
   {
-    CreateMap<Ator, AtorVm>();
+    CreateMap<Autor, AutorVm>();
     CreateMap<Post, PostVm>().ReverseMap();
     CreateMap<Comentario, ComentarioVm>().ReverseMap();
   }

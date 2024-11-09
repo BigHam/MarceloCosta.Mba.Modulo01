@@ -55,14 +55,14 @@ public static class DbMigrationHelper
       await contexto.Database.MigrateAsync();
       await contexto.SeedUsuarioEntity();
       await contexto.SeedRoleEntity();
-      await contexto.SeedUsuarioPapelEntity();
+      await contexto.SeedAutorRoleEntity();
     }
   }
 
-  public static string MD5Hash(string message)
-  {
-    var teste = BitConverter.ToString(MD5.HashData(Encoding.ASCII.GetBytes(message))).Replace("-","").ToLower();
-    return teste;
-  }
+  //public static string MD5Hash(string message)
+  //{
+  //  var teste = BitConverter.ToString(MD5.HashData(Encoding.ASCII.GetBytes(message))).Replace("-","").ToLower();
+  //  return teste;
+  //}
 
 }

@@ -6,14 +6,22 @@ using Mc.Blog.Data.Data.ViewModels;
 using Mc.Blog.Data.Services.Implementations.Base;
 using Mc.Blog.Data.Services.Interfaces;
 
+using Microsoft.AspNetCore.Mvc;
+
 namespace Mc.Blog.Data.Services.Implementations;
 
 public class ComentarioService(
   IMapper mapper,
   CtxDadosMsSql contexto,
   IUserIdentityService userIdentityService
-  ) : ServiceBase<Comentario, ComentarioVm>(mapper, contexto), IComentarioService
+  ) : ServiceBase<Comentario, ComentarioVm>(mapper, userIdentityService, contexto), IComentarioService
 {
-  private readonly IUserIdentityService _userIdentityService = userIdentityService;
+
+  public async virtual Task<ObjectResult> ListarTodosAsync(int idPost)
+  {
+    return new Ok(await ListAllByPredicateAsync(c => c.PostId == idPost));
+  }
+
+
 
 }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Mc.Blog.Data.Data.Migrations
 {
     [DbContext(typeof(CtxDadosMsSql))]
-    [Migration("20241108222550_Inicializacao")]
+    [Migration("20241109105923_Inicializacao")]
     partial class Inicializacao
     {
         /// <inheritdoc />
@@ -26,11 +26,14 @@ namespace Mc.Blog.Data.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Mc.Blog.Data.Data.Domains.Ator", b =>
+            modelBuilder.Entity("Mc.Blog.Data.Data.Domains.Autor", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(50)")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AccessFailedCount")
                         .ValueGeneratedOnAdd()
@@ -132,18 +135,20 @@ namespace Mc.Blog.Data.Data.Migrations
 
             modelBuilder.Entity("Mc.Blog.Data.Data.Domains.Comentario", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(50)")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("AlteradoEm")
                         .HasColumnType("datetime2")
                         .HasColumnName("alterado_em");
 
-                    b.Property<string>("AtorId")
-                        .IsRequired()
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("id_usuario");
+                    b.Property<int>("AutorId")
+                        .HasColumnType("int")
+                        .HasColumnName("id_autor");
 
                     b.Property<string>("Conteudo")
                         .IsRequired()
@@ -164,35 +169,36 @@ namespace Mc.Blog.Data.Data.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("excluido_em");
 
-                    b.Property<string>("PostId")
-                        .IsRequired()
-                        .HasColumnType("varchar(50)")
+                    b.Property<int>("PostId")
+                        .HasColumnType("int")
                         .HasColumnName("id_post");
 
                     b.HasKey("Id")
                         .HasName("pk_comentarios");
 
-                    b.HasIndex(new[] { "PostId" }, "idx_fk_comentarios_x_post");
+                    b.HasIndex(new[] { "AutorId" }, "idx_fk_comentarios_x_autores");
 
-                    b.HasIndex(new[] { "AtorId" }, "idx_fk_comentarios_x_usuario");
+                    b.HasIndex(new[] { "PostId" }, "idx_fk_comentarios_x_posts");
 
                     b.ToTable("comentarios", (string)null);
                 });
 
             modelBuilder.Entity("Mc.Blog.Data.Data.Domains.Post", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(50)")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("AlteradoEm")
                         .HasColumnType("datetime2")
                         .HasColumnName("alterado_em");
 
-                    b.Property<string>("AtorId")
-                        .IsRequired()
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("id_ator");
+                    b.Property<int>("AutorId")
+                        .HasColumnType("int")
+                        .HasColumnName("id_autor");
 
                     b.Property<string>("Conteudo")
                         .IsRequired()
@@ -223,15 +229,18 @@ namespace Mc.Blog.Data.Data.Migrations
                     b.HasKey("Id")
                         .HasName("pk_posts");
 
-                    b.HasIndex(new[] { "AtorId" }, "idx_fk_posts_x_atores");
+                    b.HasIndex(new[] { "AutorId" }, "idx_fk_posts_x_autores");
 
                     b.ToTable("posts", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -255,7 +264,7 @@ namespace Mc.Blog.Data.Data.Migrations
                     b.ToTable("AspNetRoles", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -269,9 +278,8 @@ namespace Mc.Blog.Data.Data.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -280,7 +288,7 @@ namespace Mc.Blog.Data.Data.Migrations
                     b.ToTable("AspNetRoleClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -294,9 +302,8 @@ namespace Mc.Blog.Data.Data.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("varchar(50)");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -305,7 +312,7 @@ namespace Mc.Blog.Data.Data.Migrations
                     b.ToTable("AspNetUserClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(450)");
@@ -316,9 +323,8 @@ namespace Mc.Blog.Data.Data.Migrations
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("varchar(50)");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -327,13 +333,13 @@ namespace Mc.Blog.Data.Data.Migrations
                     b.ToTable("AspNetUserLogins", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("varchar(50)");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -342,10 +348,10 @@ namespace Mc.Blog.Data.Data.Migrations
                     b.ToTable("AspNetUserRoles", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("varchar(50)");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(450)");
@@ -363,89 +369,89 @@ namespace Mc.Blog.Data.Data.Migrations
 
             modelBuilder.Entity("Mc.Blog.Data.Data.Domains.Comentario", b =>
                 {
-                    b.HasOne("Mc.Blog.Data.Data.Domains.Ator", "Ator")
+                    b.HasOne("Mc.Blog.Data.Data.Domains.Autor", "Autor")
                         .WithMany("Comentarios")
-                        .HasForeignKey("AtorId")
+                        .HasForeignKey("AutorId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
-                        .HasConstraintName("fk_comentarios_x_usuario");
+                        .HasConstraintName("fk_comentarios_x_autores");
 
                     b.HasOne("Mc.Blog.Data.Data.Domains.Post", "Post")
                         .WithMany("Comentarios")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
-                        .HasConstraintName("fk_comentarios_x_post");
+                        .HasConstraintName("fk_comentarios_x_posts");
 
-                    b.Navigation("Ator");
+                    b.Navigation("Autor");
 
                     b.Navigation("Post");
                 });
 
             modelBuilder.Entity("Mc.Blog.Data.Data.Domains.Post", b =>
                 {
-                    b.HasOne("Mc.Blog.Data.Data.Domains.Ator", "Ator")
+                    b.HasOne("Mc.Blog.Data.Data.Domains.Autor", "Autor")
                         .WithMany("Posts")
-                        .HasForeignKey("AtorId")
+                        .HasForeignKey("AutorId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
-                        .HasConstraintName("fk_posts_x_atores");
+                        .HasConstraintName("fk_posts_x_autores");
 
-                    b.Navigation("Ator");
+                    b.Navigation("Autor");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
-                    b.HasOne("Mc.Blog.Data.Data.Domains.Ator", null)
+                    b.HasOne("Mc.Blog.Data.Data.Domains.Autor", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
-                    b.HasOne("Mc.Blog.Data.Data.Domains.Ator", null)
+                    b.HasOne("Mc.Blog.Data.Data.Domains.Autor", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Mc.Blog.Data.Data.Domains.Ator", null)
+                    b.HasOne("Mc.Blog.Data.Data.Domains.Autor", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
-                    b.HasOne("Mc.Blog.Data.Data.Domains.Ator", null)
+                    b.HasOne("Mc.Blog.Data.Data.Domains.Autor", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Mc.Blog.Data.Data.Domains.Ator", b =>
+            modelBuilder.Entity("Mc.Blog.Data.Data.Domains.Autor", b =>
                 {
                     b.Navigation("Comentarios");
 

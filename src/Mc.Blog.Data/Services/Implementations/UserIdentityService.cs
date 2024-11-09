@@ -23,7 +23,11 @@ namespace Mc.Blog.Data.Services.Implementations
     {
       if (!IsAuthenticate()) return 0;
 
-      var claim = _contextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+      var claim = _contextAccessor.HttpContext?.User.FindFirst("AutorId")?.Value;
+
+      if (string.IsNullOrEmpty(claim))
+        claim = _contextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
       if (string.IsNullOrEmpty(claim))
         claim = _contextAccessor.HttpContext?.User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
 

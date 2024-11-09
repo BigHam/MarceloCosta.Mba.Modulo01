@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-using Mc.Blog.Data.Data.Domains;
+using Mc.Blog.Data.Data.ViewModels;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -27,13 +27,12 @@ public static class TokenConfiguration
       options.UseSecurityTokenValidators = true;
       options.TokenValidationParameters = new TokenValidationParameters
       {
-        //ValidateLifetime = true,
+        ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(settings.Secret)),
         ValidateIssuer = false,
         ValidateAudience = false,
-        //ValidAudience = settings.ValidoEm,
-        //ValidIssuer = settings.Emissor
+        ValidAudience = settings.Audience
       };
     });
 

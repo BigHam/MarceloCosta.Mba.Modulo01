@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Mc.Blog.Data.Services.Interfaces;
 
-public interface IUsuarioService
+public interface IAutorService
 {
   CtxDadosMsSql Contexto { get; }
 

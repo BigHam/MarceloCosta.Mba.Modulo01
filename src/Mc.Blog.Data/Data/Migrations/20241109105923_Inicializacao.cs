@@ -15,7 +15,8 @@ namespace Mc.Blog.Data.Data.Migrations
                 name: "AspNetRoles",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -29,7 +30,8 @@ namespace Mc.Blog.Data.Data.Migrations
                 name: "AspNetUsers",
                 columns: table => new
                 {
-                    id = table.Column<string>(type: "varchar(50)", nullable: false),
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     criado_em = table.Column<DateTime>(type: "datetime2", nullable: false),
                     nome_completo = table.Column<string>(type: "varchar(150)", nullable: true),
                     ativo = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
@@ -59,7 +61,7 @@ namespace Mc.Blog.Data.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RoleId = table.Column<int>(type: "int", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -80,7 +82,7 @@ namespace Mc.Blog.Data.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "varchar(50)", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -102,7 +104,7 @@ namespace Mc.Blog.Data.Data.Migrations
                     LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<string>(type: "varchar(50)", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -119,8 +121,8 @@ namespace Mc.Blog.Data.Data.Migrations
                 name: "AspNetUserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "varchar(50)", nullable: false),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    RoleId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -143,7 +145,7 @@ namespace Mc.Blog.Data.Data.Migrations
                 name: "AspNetUserTokens",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "varchar(50)", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -163,10 +165,11 @@ namespace Mc.Blog.Data.Data.Migrations
                 name: "posts",
                 columns: table => new
                 {
-                    id = table.Column<string>(type: "varchar(50)", nullable: false),
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     titulo = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: false),
                     conteudo = table.Column<string>(type: "varchar(2000)", maxLength: 2000, nullable: false),
-                    id_ator = table.Column<string>(type: "varchar(50)", nullable: false),
+                    id_autor = table.Column<int>(type: "int", nullable: false),
                     criado_em = table.Column<DateTime>(type: "datetime2", nullable: false),
                     alterado_em = table.Column<DateTime>(type: "datetime2", nullable: true),
                     excluido = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
@@ -176,8 +179,8 @@ namespace Mc.Blog.Data.Data.Migrations
                 {
                     table.PrimaryKey("pk_posts", x => x.id);
                     table.ForeignKey(
-                        name: "fk_posts_x_atores",
-                        column: x => x.id_ator,
+                        name: "fk_posts_x_autores",
+                        column: x => x.id_autor,
                         principalTable: "AspNetUsers",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
@@ -187,10 +190,11 @@ namespace Mc.Blog.Data.Data.Migrations
                 name: "comentarios",
                 columns: table => new
                 {
-                    id = table.Column<string>(type: "varchar(50)", nullable: false),
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     conteudo = table.Column<string>(type: "varchar(1000)", nullable: false),
-                    id_post = table.Column<string>(type: "varchar(50)", nullable: false),
-                    id_usuario = table.Column<string>(type: "varchar(50)", nullable: false),
+                    id_post = table.Column<int>(type: "int", nullable: false),
+                    id_autor = table.Column<int>(type: "int", nullable: false),
                     criado_em = table.Column<DateTime>(type: "datetime2", nullable: false),
                     alterado_em = table.Column<DateTime>(type: "datetime2", nullable: true),
                     excluido = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
@@ -200,15 +204,15 @@ namespace Mc.Blog.Data.Data.Migrations
                 {
                     table.PrimaryKey("pk_comentarios", x => x.id);
                     table.ForeignKey(
-                        name: "fk_comentarios_x_post",
-                        column: x => x.id_post,
-                        principalTable: "posts",
+                        name: "fk_comentarios_x_autores",
+                        column: x => x.id_autor,
+                        principalTable: "AspNetUsers",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "fk_comentarios_x_usuario",
-                        column: x => x.id_usuario,
-                        principalTable: "AspNetUsers",
+                        name: "fk_comentarios_x_posts",
+                        column: x => x.id_post,
+                        principalTable: "posts",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -253,19 +257,19 @@ namespace Mc.Blog.Data.Data.Migrations
                 filter: "[normalized_user_name] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "idx_fk_comentarios_x_post",
+                name: "idx_fk_comentarios_x_autores",
+                table: "comentarios",
+                column: "id_autor");
+
+            migrationBuilder.CreateIndex(
+                name: "idx_fk_comentarios_x_posts",
                 table: "comentarios",
                 column: "id_post");
 
             migrationBuilder.CreateIndex(
-                name: "idx_fk_comentarios_x_usuario",
-                table: "comentarios",
-                column: "id_usuario");
-
-            migrationBuilder.CreateIndex(
-                name: "idx_fk_posts_x_atores",
+                name: "idx_fk_posts_x_autores",
                 table: "posts",
-                column: "id_ator");
+                column: "id_autor");
         }
 
         /// <inheritdoc />

@@ -12,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 namespace Mc.Blog.Data.Data;
 
 //IdentityDbContext<Usuario, Role, int, UsuarioClaim, UsuarioRole, UsuarioLogin, RoleClaim, UsuarioToken>()
-public class CtxDadosMsSql(IConfiguration configuration) : IdentityDbContext<Ator,IdentityRole,string>()
+public class CtxDadosMsSql(IConfiguration configuration) : IdentityDbContext<Autor,IdentityRole<int>,int>()
 {
   //public DbSet<Usuario> UsuariosDb { get; set; }
   //public DbSet<UsuarioClaim> UsuariosClaimsDb { get; set; }
@@ -123,10 +123,11 @@ public class CtxDadosMsSql(IConfiguration configuration) : IdentityDbContext<Ato
     await Set<T>().AddAsync(model);
   }
 
-  public virtual async Task AppendAndSaveEntityAsync<T>(T model) where T : BaseDbEntity
+  public virtual async Task<T> AppendAndSaveEntityAsync<T>(T model) where T : BaseDbEntity
   {
     await AppendEntityAsync<T>(model);
     await SalvarAlteracoesAsync();
+    return model;
   }
 
   public virtual void UpdateEntity<T>(T model) where T : BaseDbEntity
@@ -135,16 +136,19 @@ public class CtxDadosMsSql(IConfiguration configuration) : IdentityDbContext<Ato
     model.AlteradoEm = DateTime.Now;
   }
 
-  public virtual async Task UpdateAndSaveEntityAsync<T>(T model) where T : BaseDbEntity
+  public virtual async Task<T> UpdateAndSaveEntityAsync<T>(T model) where T : BaseDbEntity
   {
     UpdateEntity(model);
     await SalvarAlteracoesAsync();
+    return model;
   }
 
-  public virtual void DeleteEntity<T>(T model) where T : BaseDbEntity
+  public virtual async Task DeleteEntityAsync<T>(T model) where T : BaseDbEntity
   {
-    Remove(model);
-    SalvarAlteracoesAsync().Wait();
+    Entry(model).State = EntityState.Modified;
+    model.Excluido = true;
+    model.ExcluidoEm = DateTime.Now;
+    await SalvarAlteracoesAsync();
   }
 
 }

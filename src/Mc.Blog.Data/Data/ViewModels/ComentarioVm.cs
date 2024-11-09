@@ -10,12 +10,12 @@ public class ComentarioVm : BaseVmEntity
   [StringLength(1000, ErrorMessage = "O campo {0} precisa estar entre {2} e {1} caracteres.", MinimumLength = 2)]
   public string Conteudo { get; set; }
 
-  public string PostId { get; set; }
+  public int PostId { get; set; }
 
-  public string AtorId { get; set; }
+  public int AutorId { get; set; }
 
 
 
   public virtual PostVm Post { get; set; }
-  public virtual AtorVm Ator { get; set; }
+  public virtual AutorVm Autor { get; set; }
 }
