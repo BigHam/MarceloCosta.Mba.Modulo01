@@ -17,7 +17,7 @@ public static class SwaggerConfiguration
 
       options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
       {
-        Description = "Informe o token JWT no formato => \"Bearer {seu token}\"",
+        Description = "Informe o token JWT no formato: Bearer <seu token>",
         Name = "Authorization",
         Scheme = "Bearer",
         BearerFormat = "JWT",
@@ -27,7 +27,16 @@ public static class SwaggerConfiguration
 
       options.AddSecurityRequirement(new OpenApiSecurityRequirement
       {
-        { new OpenApiSecurityScheme() { Reference = new OpenApiReference() { Type=ReferenceType.SecurityScheme, Id="Bearer" } }, [] }
+        {
+          new OpenApiSecurityScheme()
+          {
+            Reference = new OpenApiReference()
+            {
+              Type = ReferenceType.SecurityScheme,
+              Id = "Bearer"
+            }
+          }, new string[] {}
+        }
       });
     });
 

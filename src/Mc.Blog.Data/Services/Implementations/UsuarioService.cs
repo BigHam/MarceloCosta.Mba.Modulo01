@@ -3,7 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-using Mc.Blog.Data.Data.Base;
+using Mc.Blog.Data.Data;
 using Mc.Blog.Data.Data.Domains;
 using Mc.Blog.Data.Data.ViewModels;
 using Mc.Blog.Data.Services.Interfaces;
@@ -14,17 +14,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-using Newtonsoft.Json.Linq;
-
 namespace Mc.Blog.Data.Services.Implementations;
 
 public class UsuarioService(
-  BaseDbContext baseDbContext,
-  SignInManager<Usuario> signInManager,
-  UserManager<Usuario> userManager,
+  CtxDadosMsSql contexto,
+  SignInManager<Ator> signInManager,
+  UserManager<Ator> userManager,
+  RoleManager<IdentityRole> roleManager,
   IOptions<TokenSettings> _tokenSettings) : IUsuarioService
 {
-  public BaseDbContext Contexto { get; } = baseDbContext;
+  public CtxDadosMsSql Contexto { get; } = contexto;
 
 
   public async Task<ObjectResult> LoginAsync(LoginVm login)
@@ -73,19 +72,14 @@ public class UsuarioService(
 
   public async Task<ObjectResult> RegistrarAsync(RegistroVm registro)
   {
-    var user = new Usuario
-    {
-      CriadoEm = DateTime.Now,
-      UserName = registro.NomeUsuario,
-      Email = registro.Email,
-      EmailConfirmed = true,
-      LockoutEnabled = true,
-      Ativo = true,
-    };
-
-    var retorno = await userManager.CreateAsync(user, registro.Senha);
+    var retorno = await userManager.CreateAsync(new Ator(registro.NomeUsuario, registro.Email), registro.Senha);
     if (retorno.Succeeded)
     {
+      var user = await userManager.FindByEmailAsync(registro.Email);
+      var role = roleManager.FindByNameAsync("Usuario").Result;
+      if (role != null)
+        await userManager.AddToRoleAsync(user, role.Name);
+
       return new CreatedResult();
     }
 
@@ -107,18 +101,22 @@ public class UsuarioService(
   private async Task<string> GerarJwt(string email)
   {
     var user = await userManager.FindByEmailAsync(email);
-    var claims = await userManager.GetClaimsAsync(user);
-    return CodificarToken(await ObterClaimsUsuario(claims, user));
+    return CodificarToken(await ObterClaimsUsuario(user));
   }
 
-  private async Task<ClaimsIdentity> ObterClaimsUsuario(ICollection<Claim> claims, Usuario user)
+  private async Task<ClaimsIdentity> ObterClaimsUsuario(Ator user)
   {
-    claims.Add(new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()));
-    claims.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
-    claims.Add(new Claim(JwtRegisteredClaimNames.UniqueName, user.Email));
+    var claims = await userManager.GetClaimsAsync(user);
+    claims.Add(new Claim(JwtRegisteredClaimNames.Sub, user.UserName));
     claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-    claims.Add(new Claim(JwtRegisteredClaimNames.Nbf, ToUnixEpochDate(DateTime.UtcNow).ToString()));
-    claims.Add(new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(DateTime.UtcNow).ToString(), ClaimValueTypes.Integer64));
+    claims.Add(new Claim(JwtRegisteredClaimNames.Iat, new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64));
+    claims.Add(new Claim("UserId", user.Id.ToString()));
+    claims.Add(new Claim("DisplayName", user.UserName));
+    claims.Add(new Claim("Email", user.Email));
+
+    //claims.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
+    //claims.Add(new Claim(JwtRegisteredClaimNames.UniqueName, user.Email));
+    //claims.Add(new Claim(JwtRegisteredClaimNames.Nbf, new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds().ToString()));
 
     var roleList = await userManager.GetRolesAsync(user);
     foreach (var userRole in roleList)
@@ -139,9 +137,9 @@ public class UsuarioService(
 
     var token = tokenHandler.CreateToken(new SecurityTokenDescriptor
     {
-      Issuer = _tokenSettings.Value.Emissor,
-      Audience = _tokenSettings.Value.ValidoEm,
       Subject = identityClaims,
+      Issuer = _tokenSettings.Value.Emissor,
+      Audience = _tokenSettings.Value.Audience,
       Expires = DateTime.UtcNow.AddHours(_tokenSettings.Value.ExpiracaoHoras),
       SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
     });

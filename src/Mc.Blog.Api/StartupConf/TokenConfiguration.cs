@@ -22,17 +22,18 @@ public static class TokenConfiguration
       options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     }).AddJwtBearer(options =>
     {
-      options.RequireHttpsMetadata = true;
+      options.RequireHttpsMetadata = false;
       options.SaveToken = true;
+      options.UseSecurityTokenValidators = true;
       options.TokenValidationParameters = new TokenValidationParameters
       {
-        ValidateLifetime = true,
+        //ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(settings.Secret)),
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidAudience = settings.ValidoEm,
-        ValidIssuer = settings.Emissor
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        //ValidAudience = settings.ValidoEm,
+        //ValidIssuer = settings.Emissor
       };
     });
 

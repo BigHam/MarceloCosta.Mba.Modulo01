@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Mc.Blog.Data.Data.Configurations;
 
-public class PessoaGeralConfiguration : BaseConfiguration<Post>
+public class PostConfiguration : BaseConfiguration<Post>
 {
   public override void ConfigureEntity(EntityTypeBuilder<Post> builder)
   {
@@ -15,6 +15,7 @@ public class PessoaGeralConfiguration : BaseConfiguration<Post>
     builder.ToTable(tabela);
 
     builder.Property(e => e.Id)
+      .HasColumnType("varchar(50)")
       .HasColumnName("id")
       .IsRequired();
 
@@ -29,23 +30,23 @@ public class PessoaGeralConfiguration : BaseConfiguration<Post>
 
     builder.Property(c => c.Conteudo)
       .HasColumnName("conteudo")
-      .HasColumnType("varchar(MAX)")
+      .HasColumnType("varchar(2000)")
       .IsRequired();
 
-    builder.Property(c => c.UsuarioId)
-      .HasColumnName("id_usuario")
-      .HasColumnType("int")
+    builder.Property(c => c.AtorId)
+      .HasColumnName("id_ator")
+      .HasColumnType("varchar(50)")
       .IsRequired();
   }
 
   public override void ConfigureRelationships(EntityTypeBuilder<Post> builder)
   {
-    builder.HasOne(d => d.Usuario)
+    builder.HasOne(d => d.Ator)
       .WithMany(p => p.Posts)
-      .HasForeignKey(d => d.UsuarioId)
-      .HasConstraintName("fk_posts_x_usuario")
+      .HasForeignKey(d => d.AtorId)
+      .HasConstraintName("fk_posts_x_atores")
       .OnDelete(DeleteBehavior.Restrict);
-    builder.HasIndex(c => c.UsuarioId, "idx_fk_posts_x_usuario");
+    builder.HasIndex(c => c.AtorId, "idx_fk_posts_x_atores");
   }
 
 }

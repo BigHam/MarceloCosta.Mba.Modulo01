@@ -27,7 +27,7 @@ namespace Mc.Blog.Api.Controllers
     }
 
     [HttpPost("registrar")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesDefaultResponseType]
     public async Task<ActionResult> Registrar(RegistroVm registro)

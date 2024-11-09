@@ -10,9 +10,9 @@ namespace Mc.Blog.Data.Compartilhado.StartupConf;
 
 public static class IdentityConfiguration
 {
-  public static void AddIdentityConfiguration(this WebApplicationBuilder builder)
+  public static WebApplicationBuilder AddIdentityConfiguration(this WebApplicationBuilder builder)
   {
-    builder.Services.AddDefaultIdentity<Usuario>(options =>
+    builder.Services.AddDefaultIdentity<Ator>(options =>
     {
       // Opções de Validação da Senha
       options.Password.RequireDigit = false;
@@ -33,9 +33,11 @@ public static class IdentityConfiguration
 
       // Opções de Validação da Conta
       options.SignIn.RequireConfirmedAccount = true;
-    }).AddRoles<Papel>()
+    }).AddRoles<IdentityRole>()
       .AddErrorDescriber<MensagensPtBr>()
       .AddEntityFrameworkStores<CtxDadosMsSql>();
+
+    return builder;
   }
 }
 

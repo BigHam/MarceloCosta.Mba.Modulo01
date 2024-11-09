@@ -5,20 +5,21 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Mc.Blog.Data.Data.Configurations;
 
-public class SecUserConfiguration : IEntityTypeConfiguration<Usuario>
+public class AtorConfiguration : IEntityTypeConfiguration<Ator>
 {
-  void IEntityTypeConfiguration<Usuario>.Configure(EntityTypeBuilder<Usuario> builder)
+  void IEntityTypeConfiguration<Ator>.Configure(EntityTypeBuilder<Ator> builder)
   {
-    const string tabela = "usuarios";
+    //const string tabela = "AspNetUsers";
 
-    builder.ToTable(tabela);
+    //builder.ToTable(tabela);
 
     builder.Property(e => e.Id)
       .HasColumnName("id")
+      .HasColumnType("varchar(50)")
       .IsRequired();
 
-    builder.HasKey(e => e.Id)
-      .HasName($"pk_{tabela}");
+    builder.HasKey(e => e.Id);
+      //.HasName($"pk_{tabela}");
 
     builder.Property(c => c.CriadoEm)
       .HasColumnName("criado_em")

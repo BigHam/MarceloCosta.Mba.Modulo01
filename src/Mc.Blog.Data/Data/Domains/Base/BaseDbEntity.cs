@@ -3,7 +3,7 @@
 public abstract class BaseDbEntity
 {
   // Campo Chave Padrão
-  public int Id { get; set; }
+  public string Id { get; set; }
 
   public DateTime CriadoEm { get; set; }
   public DateTime? AlteradoEm { get; set; }

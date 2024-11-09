@@ -15,6 +15,7 @@ public class ComentarioConfiguration : BaseConfiguration<Comentario>
     builder.ToTable(tabela);
 
     builder.Property(e => e.Id)
+      .HasColumnType("varchar(50)")
       .HasColumnName("id")
       .IsRequired();
 
@@ -29,23 +30,23 @@ public class ComentarioConfiguration : BaseConfiguration<Comentario>
 
     builder.Property(c => c.PostId)
       .HasColumnName("id_post")
-      .HasColumnType("int")
+      .HasColumnType("varchar(50)")
       .IsRequired();
 
-    builder.Property(c => c.UsuarioId)
+    builder.Property(c => c.AtorId)
       .HasColumnName("id_usuario")
-      .HasColumnType("int")
+      .HasColumnType("varchar(50)")
       .IsRequired();
   }
 
   public override void ConfigureRelationships(EntityTypeBuilder<Comentario> builder)
   {
-    builder.HasOne(d => d.Usuario)
+    builder.HasOne(d => d.Ator)
       .WithMany(p => p.Comentarios)
-      .HasForeignKey(d => d.UsuarioId)
+      .HasForeignKey(d => d.AtorId)
       .HasConstraintName("fk_comentarios_x_usuario")
       .OnDelete(DeleteBehavior.Restrict);
-    builder.HasIndex(c => c.UsuarioId, "idx_fk_comentarios_x_usuario");
+    builder.HasIndex(c => c.AtorId, "idx_fk_comentarios_x_usuario");
 
     builder.HasOne(d => d.Post)
       .WithMany(p => p.Comentarios)

@@ -4,9 +4,12 @@ using Mc.Blog.Data.Data.Seed;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
-builder.AddNativeInjectorConfiguration();
+
 builder.AddDbConfiguration();
+builder.AddNativeInjectorConfiguration();
+
 builder.AddIdentityConfiguration();
 builder.AddTokenConfiguration();
 
@@ -17,10 +20,11 @@ builder.AddSwaggerConfiguration();
 var app = builder.Build();
 
 app.UseSwaggerConfiguration();
+
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

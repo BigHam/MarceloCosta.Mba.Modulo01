@@ -1,19 +1,35 @@
-﻿using Mc.Blog.Data.Data.Base;
+﻿using System.Linq.Expressions;
+
 using Mc.Blog.Data.Data.Configurations;
 using Mc.Blog.Data.Data.Domains;
+using Mc.Blog.Data.Data.Domains.Base;
 
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace Mc.Blog.Data.Data;
 
-public class CtxDadosMsSql(IConfiguration configuration) : BaseDbContext(configuration)
+//IdentityDbContext<Usuario, Role, int, UsuarioClaim, UsuarioRole, UsuarioLogin, RoleClaim, UsuarioToken>()
+public class CtxDadosMsSql(IConfiguration configuration) : IdentityDbContext<Ator,IdentityRole,string>()
 {
-  public DbSet<Usuario> UsuariosDb { get; set; }
-  public DbSet<Papel> PapeisDb { get; set; }
-  public DbSet<Post> PostsDb { get; set; }
-  public DbSet<Comentario> ComentariosDb { get; set; }
+  //public DbSet<Usuario> UsuariosDb { get; set; }
+  //public DbSet<UsuarioClaim> UsuariosClaimsDb { get; set; }
+  //public DbSet<UsuarioLogin> UsuariosLoginDb { get; set; }
+  //public DbSet<UsuarioRole> UsuariosRolesDb { get; set; }
+  //public DbSet<UsuarioToken> UsuariosTokensDb { get; set; }
+  //public DbSet<Role> PapeisDb { get; set; }
+  //public DbSet<Post> PostsDb { get; set; }
+  //public DbSet<Comentario> ComentariosDb { get; set; }
+
+
+  protected IConfiguration Configuration = configuration;
+
+  protected string GetConnectionString(string connectionName)
+  {
+    return Configuration.GetConnectionString(connectionName);
+  }
 
 
 
@@ -29,13 +45,106 @@ public class CtxDadosMsSql(IConfiguration configuration) : BaseDbContext(configu
     modelBuilder.UseCollation("SQL_Latin1_General_CP1_CI_AI");
     modelBuilder.ApplyConfigurationsFromAssembly(typeof(CtxDadosMsSql).Assembly);
 
-    modelBuilder.Entity<IdentityUserClaim<int>>(b => { b.ToTable("usuarios_direitos"); });
-    modelBuilder.Entity<IdentityUserRole<int>>(b =>
-    {
-      b.ToTable("usuarios_papeis");
-      b.HasKey(c => new { c.UserId, c.RoleId });
-    });
+    //modelBuilder.Entity<IdentityUserClaim<int>>(b => { b.ToTable("usuarios_direitos"); });
+    //modelBuilder.Entity<IdentityRoleClaim<int>>(b => { b.ToTable("papeis_direitos"); });
+    //modelBuilder.Entity<IdentityUserRole<int>>(b =>
+    //{
+    //  b.ToTable("usuarios_papeis");
+    //  b.HasKey(c => new { c.UserId, c.RoleId });
+    //});
+
+    //modelBuilder.ApplyConfiguration(new PostConfiguration());
+    //modelBuilder.ApplyConfiguration(new ComentarioConfiguration());
+
+    //modelBuilder.ApplyConfiguration(new UsuarioConfiguration());
+    //modelBuilder.ApplyConfiguration(new UsuarioClaimConfiguration());
+    //modelBuilder.ApplyConfiguration(new UsuarioLoginConfiguration());
+    //modelBuilder.ApplyConfiguration(new UsuarioRoleConfiguration());
+    //modelBuilder.ApplyConfiguration(new UsuarioTokenConfiguration());
+
+    //modelBuilder.ApplyConfiguration(new RoleConfiguration());
+    //modelBuilder.ApplyConfiguration(new RoleClaimConfiguration());
 
     base.OnModelCreating(modelBuilder);
   }
+
+
+
+  public DbSet<T> GetDbSet<T>() where T : BaseDbEntity
+  {
+    return Set<T>();
+  }
+
+  public virtual IQueryable<T> GetQueryable<T>() where T : BaseDbEntity
+  {
+    return Set<T>().AsQueryable();
+  }
+
+  public virtual async Task<T> GetByIdAsync<T>(params object[] keyValues) where T : BaseDbEntity
+  {
+    return await Set<T>().FindAsync(keyValues);
+  }
+
+  public virtual async Task<T> GetFirstByPredicateAsync<T>(Expression<Func<T, bool>> predicado) where T : BaseDbEntity
+  {
+    return await Set<T>().FirstOrDefaultAsync(predicado);
+  }
+
+  public virtual async Task<IList<T>> ListAllAsync<T>() where T : BaseDbEntity
+  {
+    return await GetQueryable<T>().AsNoTracking().ToListAsync();
+  }
+
+  public virtual async Task<IList<T>> ListAllByPredicateAsync<T>(Expression<Func<T, bool>> predicado) where T : BaseDbEntity
+  {
+    return await GetQueryable<T>().AsNoTracking().Where(predicado).ToListAsync();
+  }
+
+  public virtual async Task SalvarAlteracoesAsync()
+  {
+    try
+    {
+      await SaveChangesAsync(true);
+    }
+    catch (Exception e)
+    {
+      throw new Exception($"Ocorreu um erro ao tentar gravar os dados. Mensagem: {e.Message}", e.InnerException);
+    }
+  }
+
+  public virtual void AppendEntity<T>(T model) where T : BaseDbEntity
+  {
+    AppendEntityAsync(model).Wait();
+  }
+
+  public virtual async Task AppendEntityAsync<T>(T model) where T : BaseDbEntity
+  {
+    model.CriadoEm = DateTime.Now;
+    await Set<T>().AddAsync(model);
+  }
+
+  public virtual async Task AppendAndSaveEntityAsync<T>(T model) where T : BaseDbEntity
+  {
+    await AppendEntityAsync<T>(model);
+    await SalvarAlteracoesAsync();
+  }
+
+  public virtual void UpdateEntity<T>(T model) where T : BaseDbEntity
+  {
+    Entry(model).State = EntityState.Modified;
+    model.AlteradoEm = DateTime.Now;
+  }
+
+  public virtual async Task UpdateAndSaveEntityAsync<T>(T model) where T : BaseDbEntity
+  {
+    UpdateEntity(model);
+    await SalvarAlteracoesAsync();
+  }
+
+  public virtual void DeleteEntity<T>(T model) where T : BaseDbEntity
+  {
+    Remove(model);
+    SalvarAlteracoesAsync().Wait();
+  }
+
 }

@@ -1,12 +1,10 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-
+﻿using Mc.Blog.Data.Data.Domains;
 
 using Microsoft.AspNetCore.Identity;
 
-namespace Mc.Blog.Data.Data.Domains;
+namespace Mc.Blog.Data.Data.ViewModels;
 
-public class Usuario : IdentityUser<int>
+public class AtorVm : IdentityUser<string>
 {
   public DateTime CriadoEm { get; set; }
 
