@@ -6,7 +6,7 @@ namespace Mc.Blog.Data.Data.Seed.Entities
 {
   public static class SeedAutores
   {
-    public static async Task SeedUsuarioEntity(this CtxDadosMsSql context)
+    public static async Task SeedAutorEntity(this CtxDadosMsSql context)
     {
       if (context.Set<Autor>().Any())
         return;
@@ -24,6 +24,13 @@ namespace Mc.Blog.Data.Data.Seed.Entities
         NomeCompleto = "Eliene Mazani",
         PasswordHash = "AQAAAAIAAYagAAAAEBqDOCauSGlidoMBX3I/XcFpVJrOHxgI7qKDmKNX9dA7vyIaeX8xkhg57sS3PUiL7A==",
         SecurityStamp = "FVGRU4EX6T6V47LV4N4SG6YJCZOVQVXF",
+      });
+
+      await context.Set<Autor>().AddAsync(new Autor(3, "carlos.sa", "carlos.sa@gmail.com")
+      {
+        NomeCompleto = "Carlos Sa",
+        PasswordHash = "AQAAAAIAAYagAAAAEDjF1XOzTzJ+ANlpeF+lBAZHpi9EYSklOy2M0406DHg45zls+jKEib+HmsKuwKoCIw==",
+        SecurityStamp = "G2CRZJOEO7WIWLQOJRNSMQQJJANA3PAG",
       });
       //await context.SaveChangesAsync();
 

@@ -12,22 +12,6 @@ using Microsoft.Extensions.Hosting;
 namespace Mc.Blog.Data.Data.Seed;
 
 
-//private readonly RandomNumberGenerator _rng;
-//public virtual string HashPassword(TUser user, string password)
-//{
-//  if (_compatibilityMode == PasswordHasherCompatibilityMode.IdentityV2)
-//  {
-//    return Convert.ToBase64String(HashPasswordV2(password, _rng));
-//  }
-//  else
-//  {
-//    return Convert.ToBase64String(HashPasswordV3(password, _rng));
-//  }
-//}
-
-
-
-
 public static class DbMigrationHelperExtension
 {
   public static void UseDbMigrationHelper(this WebApplication app)
@@ -53,9 +37,12 @@ public static class DbMigrationHelper
     if (env.IsDevelopment())
     {
       await contexto.Database.MigrateAsync();
-      await contexto.SeedUsuarioEntity();
+
+      await contexto.SeedAutorEntity();
       await contexto.SeedRoleEntity();
       await contexto.SeedAutorRoleEntity();
+      await contexto.SeedPostEntity();
+      await contexto.SeedComentarioEntity();
     }
   }
 
@@ -64,5 +51,18 @@ public static class DbMigrationHelper
   //  var teste = BitConverter.ToString(MD5.HashData(Encoding.ASCII.GetBytes(message))).Replace("-","").ToLower();
   //  return teste;
   //}
+  //private readonly RandomNumberGenerator _rng;
 
+
+  //public virtual string HashPassword(TUser user, string password)
+  //{
+  //  if (_compatibilityMode == PasswordHasherCompatibilityMode.IdentityV2)
+  //  {
+  //    return Convert.ToBase64String(HashPasswordV2(password, _rng));
+  //  }
+  //  else
+  //  {
+  //    return Convert.ToBase64String(HashPasswordV3(password, _rng));
+  //  }
+  //}
 }
