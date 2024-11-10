@@ -1,20 +1,15 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="">
-  <meta name="author" content="Marcelo Costa">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>McBlog - @ViewData["Title"]</title>
   <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
   <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
 </head>
 <body>
-  <header>
-    <partial name="_MenuPartial" />
-  </header>
-  <main role="main" class="container pb-3">
+  <main role="main" class="container p-5">
     @RenderBody()
   </main>
   <partial name="_Footer" />

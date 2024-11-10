@@ -217,6 +217,11 @@ namespace Mc.Blog.Data.Data.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("excluido_em");
 
+                    b.Property<string>("Imagem")
+                        .HasMaxLength(300)
+                        .HasColumnType("varchar(300)")
+                        .HasColumnName("imagem");
+
                     b.Property<string>("Titulo")
                         .IsRequired()
                         .HasMaxLength(150)

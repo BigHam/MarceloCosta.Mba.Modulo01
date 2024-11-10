@@ -6,6 +6,7 @@ public class PostVm : BaseVmEntity
 {
   public string Titulo { get; set; }
   public string Conteudo { get; set; }
+  public string Imagem { get; set; }
   public int AutorId { get; set; }
 
 

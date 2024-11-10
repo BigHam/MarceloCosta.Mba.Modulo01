@@ -12,19 +12,6 @@ public class ComentarioConfiguration : BaseConfiguration<Comentario>
 
   public override void ConfigureEntity(EntityTypeBuilder<Comentario> builder)
   {
-    //const string tabela = "comentarios";
-
-    //builder.ToTable(tabela);
-
-    //builder.Property(e => e.Id)
-    //  .HasColumnName("id")
-    //  //.HasColumnType("varchar(50)")
-    //  .IsRequired();
-
-    //builder.HasKey(e => e.Id)
-    //  .HasName($"pk_{tabela}");
-
-
     builder.Property(c => c.Conteudo)
       .HasColumnName("conteudo")
       .HasColumnType("varchar(1000)")

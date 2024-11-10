@@ -14,6 +14,9 @@ public class Post : BaseDbEntity
   [StringLength(2000, ErrorMessage = "O campo {0} precisa estar entre {2} e {1} caracteres.", MinimumLength = 2)]
   public string Conteudo { get; set; }
 
+  [StringLength(300, ErrorMessage = "O campo {0} não pode exceder {1} caracteres.")]
+  public string Imagem { get; set; }
+
   public int AutorId { get; set; }
 
 

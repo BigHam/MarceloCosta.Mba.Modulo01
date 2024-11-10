@@ -169,6 +169,7 @@ namespace Mc.Blog.Data.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     titulo = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: false),
                     conteudo = table.Column<string>(type: "varchar(2000)", maxLength: 2000, nullable: false),
+                    imagem = table.Column<string>(type: "varchar(300)", maxLength: 300, nullable: true),
                     id_autor = table.Column<int>(type: "int", nullable: false),
                     criado_em = table.Column<DateTime>(type: "datetime2", nullable: false),
                     alterado_em = table.Column<DateTime>(type: "datetime2", nullable: true),

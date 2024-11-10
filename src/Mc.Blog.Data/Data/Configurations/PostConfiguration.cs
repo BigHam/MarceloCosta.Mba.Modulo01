@@ -12,19 +12,6 @@ public class PostConfiguration : BaseConfiguration<Post>
 
   public override void ConfigureEntity(EntityTypeBuilder<Post> builder)
   {
-    //const string tabela = "posts";
-
-    //builder.ToTable(tabela);
-
-    //builder.Property(e => e.Id)
-    //  .HasColumnType("varchar(50)")
-    //  .HasColumnName("id")
-    //  .IsRequired();
-
-    //builder.HasKey(e => e.Id)
-    //  .HasName($"pk_{tabela}");
-
-
     builder.Property(c => c.Titulo)
       .HasColumnName("titulo")
       .HasColumnType("varchar(150)")
@@ -34,6 +21,11 @@ public class PostConfiguration : BaseConfiguration<Post>
       .HasColumnName("conteudo")
       .HasColumnType("varchar(2000)")
       .IsRequired();
+
+    builder.Property(c => c.Imagem)
+      .HasColumnName("imagem")
+      .HasColumnType("varchar(300)")
+      .IsRequired(false);
 
     builder.Property(c => c.AutorId)
       .HasColumnName("id_autor")
@@ -50,5 +42,4 @@ public class PostConfiguration : BaseConfiguration<Post>
       .OnDelete(DeleteBehavior.Restrict);
     builder.HasIndex(c => c.AutorId, "idx_fk_posts_x_autores");
   }
-
 }

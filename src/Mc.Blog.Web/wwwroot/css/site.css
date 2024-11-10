@@ -20,3 +20,7 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.mc-margem-top {
+  margin-top: 6rem !important;
+}

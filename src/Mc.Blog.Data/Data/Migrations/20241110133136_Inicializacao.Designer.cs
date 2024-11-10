@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Mc.Blog.Data.Data.Migrations
 {
     [DbContext(typeof(CtxDadosMsSql))]
-    [Migration("20241109105923_Inicializacao")]
+    [Migration("20241110133136_Inicializacao")]
     partial class Inicializacao
     {
         /// <inheritdoc />
@@ -219,6 +219,11 @@ namespace Mc.Blog.Data.Data.Migrations
                     b.Property<DateTime?>("ExcluidoEm")
                         .HasColumnType("datetime2")
                         .HasColumnName("excluido_em");
+
+                    b.Property<string>("Imagem")
+                        .HasMaxLength(300)
+                        .HasColumnType("varchar(300)")
+                        .HasColumnName("imagem");
 
                     b.Property<string>("Titulo")
                         .IsRequired()
