@@ -1,4 +1,4 @@
-﻿namespace Mc.Blog.Web.StartupConf
+﻿namespace Mc.Blog.Api.StartupConf
 {
   public static class AddCorsConfiguration
   {

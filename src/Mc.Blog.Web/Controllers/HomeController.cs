@@ -3,19 +3,18 @@ using Mc.Blog.Web.Models;
 
 using Microsoft.AspNetCore.Mvc;
 
-namespace Mc.Blog.Web.Controllers
+namespace Mc.Blog.Web.Controllers;
+
+public class HomeController(IPostService service) : Controller
 {
-  public class HomeController(IPostService service) : Controller
+  public async Task<IActionResult> Index()
   {
-
-    public async Task<IActionResult> Index()
+    var abertura = new Abertura
     {
-      var abertura = new Abertura
-      {
-        Posts = await service.ListarTodosPostsAsync()
-      };
+      Posts = await service.ListarPostsAsync(),
+      Populares = (await service.ListarPostsPopularesAsync()).OrderByDescending(o => o.TotalComentarios).Take(5).ToList(),
+    };
 
-      return View(abertura);
-    }
+    return View(abertura);
   }
 }

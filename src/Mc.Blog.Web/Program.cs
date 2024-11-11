@@ -13,8 +13,6 @@ builder.AddNativeInjectorConfiguration();
 
 builder.AddIdentityConfiguration();
 
-builder.AddCorsConfig();
-
 
 
 var app = builder.Build();

@@ -24,3 +24,7 @@ body {
 .mc-margem-top {
   margin-top: 6rem !important;
 }
+
+.btn-w-padrao {
+  width: 110px;
+}

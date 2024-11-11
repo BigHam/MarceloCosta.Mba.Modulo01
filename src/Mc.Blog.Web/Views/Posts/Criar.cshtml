@@ -1,0 +1,41 @@
+﻿@model PostVm
+@{
+  ViewData["Title"] = "Novo Post";
+}
+
+<div class="container">
+  <form asp-action="Criar" autocomplete="off">
+    <div class="clearfix my-3">
+      <a asp-area="" asp-controller="Posts" asp-action="Gerenciar" class="btn btn-success float-start btn-w-padrao">< VOLTAR</a>
+      <input type="submit" value="GRAVAR" class="btn btn-success float-end btn-w-padrao" />
+    </div>
+
+    <h2 class="my-2">Novo Post</h2>
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group mb-3">
+      <label asp-for="Titulo" class="form-label"></label>
+      <input asp-for="Titulo" class="form-control" />
+      <span asp-validation-for="Titulo" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+      <label asp-for="Imagem" class="form-label"></label>
+      <input asp-for="Imagem" class="form-control" />
+      <span asp-validation-for="Imagem" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+      <label asp-for="Conteudo" class="form-label"></label>
+      <textarea asp-for="Conteudo" class="form-control" rows="15"></textarea>
+      <span asp-validation-for="Conteudo" class="text-danger"></span>
+    </div>
+  </form>
+
+
+</div>
+
+@section Scripts {
+  @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+  }
+}

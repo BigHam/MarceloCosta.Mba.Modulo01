@@ -7,5 +7,7 @@ namespace Mc.Blog.Data.Services.Interfaces;
 
 public interface IPostService : IServiceBase<PostVm>
 {
-  Task<List<PostVm>> ListarTodosPostsAsync();
+  Task<List<PostVm>> ListarPostsAsync();
+  Task<List<PostPopularVm>> ListarPostsPopularesAsync();
+  Task<PostVm> VisualizarPostAsync(int id);
 }

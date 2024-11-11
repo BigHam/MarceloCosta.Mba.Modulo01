@@ -6,49 +6,31 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Mc.Blog.Web.Controllers;
 
-[Route("Post")]
 public class PostsController(IPostService service) : Controller
 {
-  [HttpGet("visualizando/{id:int}")]
+  [HttpGet("Visualizar/{id:int}")]
   public async Task<IActionResult> Visualizar(int id)
   {
-    return View((await service.ObterItemAsync(id)).Value);
+    return View(await service.VisualizarPostAsync(id));
   }
 
 
   [Authorize, HttpGet("Gerenciar")]
   public async Task<IActionResult> Gerenciar()
   {
-    return View(await service.ListarTodosPostsAsync());
+    return View(await service.ListarPostsPopularesAsync());
+    //return View(await service.ListarPostsAsync());
   }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  [Authorize, HttpGet("novo")]
-  public IActionResult Create()
+  [Authorize, HttpGet("Criar")]
+  public IActionResult Criar()
   {
     return View();
   }
 
-  [Authorize, HttpPost("novo"), ValidateAntiForgeryToken]
-  public async Task<IActionResult> Create(PostVm model)
+  [Authorize, HttpPost("Criar"), ValidateAntiForgeryToken]
+  public async Task<IActionResult> Criar(PostVm model)
   {
     if (!ModelState.IsValid)
     {
@@ -60,14 +42,14 @@ public class PostsController(IPostService service) : Controller
   }
 
 
-  [Authorize, HttpGet("editar/{id:int}")]
-  public async Task<IActionResult> Edit(int id)
+  [Authorize, HttpGet("Editar/{id:int}")]
+  public async Task<IActionResult> Editar(int id)
   {
-    return View(await service.ObterItemAsync(id));
+    return View((await service.ObterItemAsync(id)).Value);
   }
 
-  [Authorize, HttpPost("editar/{id:int}"), ValidateAntiForgeryToken]
-  public async Task<IActionResult> Edit(int id, PostVm model)
+  [Authorize, HttpPost("Editar/{id:int}"), ValidateAntiForgeryToken]
+  public async Task<IActionResult> Editar(int id, PostVm model)
   {
     if (id != model.Id)
     {
@@ -80,9 +62,29 @@ public class PostsController(IPostService service) : Controller
       return View(model);
     }
 
-    await service.AlterarItemAsync(model);
-    return RedirectToAction("Index");
+    await service.AlterarItemAsync(model, id);
+    return RedirectToAction("Gerenciar", "Posts");
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   [Authorize, HttpGet("excluir/{id:int}")]
   public async Task<IActionResult> Delete(int id)

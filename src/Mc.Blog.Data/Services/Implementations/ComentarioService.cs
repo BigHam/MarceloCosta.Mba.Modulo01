@@ -22,6 +22,4 @@ public class ComentarioService(
     return new Ok(await ListAllByPredicateAsync(c => c.PostId == idPost));
   }
 
-
-
 }

@@ -87,7 +87,7 @@ namespace Mc.Blog.Data.Data.Seed.Entities
       executionStrategy.Execute(() =>
       {
         using var transaction = context.Database.BeginTransaction();
-        context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [dbo].[posts] ON");
+        context.Database. ExecuteSqlRaw("SET IDENTITY_INSERT [dbo].[posts] ON");
         context.SaveChanges();
         context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [dbo].[posts] OFF");
         transaction.Commit();
