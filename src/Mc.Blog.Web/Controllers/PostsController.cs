@@ -19,7 +19,6 @@ public class PostsController(IPostService service) : Controller
   public async Task<IActionResult> Gerenciar()
   {
     return View(await service.ListarPostsPopularesAsync());
-    //return View(await service.ListarPostsAsync());
   }
 
 
@@ -29,7 +28,8 @@ public class PostsController(IPostService service) : Controller
     return View();
   }
 
-  [Authorize, HttpPost("Criar"), ValidateAntiForgeryToken]
+  [Authorize, HttpPost("Criar")]
+  [ValidateAntiForgeryToken]
   public async Task<IActionResult> Criar(PostVm model)
   {
     if (!ModelState.IsValid)
@@ -48,7 +48,8 @@ public class PostsController(IPostService service) : Controller
     return View((await service.ObterItemAsync(id)).Value);
   }
 
-  [Authorize, HttpPost("Editar/{id:int}"), ValidateAntiForgeryToken]
+  [Authorize, HttpPost("Editar/{id:int}")]
+  [ValidateAntiForgeryToken]
   public async Task<IActionResult> Editar(int id, PostVm model)
   {
     if (id != model.Id)

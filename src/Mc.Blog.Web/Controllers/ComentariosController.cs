@@ -19,6 +19,7 @@ public class ComentariosController(
   }
 
   [Authorize, HttpPost("Criar")]
+  [ValidateAntiForgeryToken]
   public async Task<IActionResult> Criar(int postId, ComentarioVm model)
   {
     if (!ModelState.IsValid)
@@ -39,6 +40,7 @@ public class ComentariosController(
   }
 
   [Authorize, HttpPost("Editar/{id:int}")]
+  [ValidateAntiForgeryToken]
   public async Task<IActionResult> Editar(int postId, int id, ComentarioVm model)
   {
     if (!ModelState.IsValid)
@@ -56,30 +58,28 @@ public class ComentariosController(
   }
 
 
-  //[Authorize, HttpPost("excluir/{id:int}")]
-  //public async Task<IActionResult> Delete(long id, long postId)
+
+  //// GET: TesteController/Delete/5
+  //public ActionResult Delete(int id)
   //{
-  //  //var comentario = await comentarioRepository.ObterPorId(id, postId);
-
-  //  //if (comentario == null)
-  //  //{
-  //  //  return NotFound();
-  //  //}
-
-  //  //var usuarioAutorizado = userApp.IsOwnerOrAdmin(comentario.Post?.Autor.UsuarioId);
-
-  //  //if (!usuarioAutorizado)
-  //  //{
-  //  //  return Forbid();
-  //  //}
-
-  //  //await comentarioRepository.Remover(comentario);
-
-  //  //var comentarios = mapper.Map<IEnumerable<ComentarioViewModel>>(await comentarioRepository.ObterTodosPorPost(comentario.PostId));
-  //  //var postVewModel = mapper.Map<PostViewModel>(comentario.Post).DefinirPermissao(userApp);
-
-  //  //ViewBag.TemPermissao = postVewModel.TemPermissao;
-
-  //  return PartialView("_ComentarioListaPartial", null);
+  //  return View();
   //}
+
+  //// POST: TesteController/Delete/5
+  //[HttpPost]
+  //[ValidateAntiForgeryToken]
+  //public ActionResult Delete(int id, IFormCollection collection)
+  //{
+  //  try
+  //  {
+  //    return RedirectToAction(nameof(Index));
+  //  }
+  //  catch
+  //  {
+  //    return View();
+  //  }
+  //}
+
+
+
 }
