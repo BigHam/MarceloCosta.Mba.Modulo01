@@ -22,9 +22,16 @@ public class PostVm : BaseVmEntity
   [StringLength(300, ErrorMessage = "O campo {0} precisa estar entre {2} e {1} caracteres.", MinimumLength = 2)]
   public string Imagem { get; set; }
   public int AutorId { get; set; }
+  public string Resumo => GetResumo();
 
 
   public virtual AutorVm Autor { get; set; }
 
   public virtual List<ComentarioVm> Comentarios { get; set; }
+
+
+  private string GetResumo()
+  {
+    return $"{Conteudo[..99]}[..]";
+  }
 }
