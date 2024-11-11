@@ -6,19 +6,30 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Mc.Blog.Web.Controllers;
 
-[Route("Visualizar/{postId:int}/Comentario")]
+[Route("Visualizar/{postId:int}")]
 public class ComentariosController(
-  IComentarioService comentarioService,
+  IComentarioService service,
   IUserIdentityService userIdentityService) : Controller
 {
 
-  [Authorize, HttpGet("Criar")]
+  [HttpGet]
+  public async Task<IActionResult> Visualizar(int postId)
+  {
+    var teste = await service.VisualizarPostAsync(postId);
+
+    return View(teste);
+  }
+
+
+
+
+  [Authorize, HttpGet("Comentario/Criar")]
   public IActionResult Criar(int postId)
   {
     return View(new ComentarioVm() { PostId = postId, AutorId = userIdentityService.GetUserId() });
   }
 
-  [Authorize, HttpPost("Criar")]
+  [Authorize, HttpPost("Comentario/Criar")]
   [ValidateAntiForgeryToken]
   public async Task<IActionResult> Criar(int postId, ComentarioVm model)
   {
@@ -28,18 +39,20 @@ public class ComentariosController(
     }
 
     model.AutorId = userIdentityService.GetUserId();
-    await comentarioService.CriarItemAsync(model);
+    await service.CriarItemAsync(model);
 
-    return RedirectToAction("Visualizar","Posts",new { Id = postId });
+    return RedirectToAction("Visualizar","Comentarios",new { postId });
   }
 
-  [Authorize, HttpGet("Editar/{id:int}")]
+
+
+  [Authorize, HttpGet("Comentario/Editar/{id:int}")]
   public async Task<IActionResult> Editar(int postId, int id)
   {
-    return View((await comentarioService.ObterItemAsync(id)).Value);
+    return View((await service.ObterItemAsync(id)).Value);
   }
 
-  [Authorize, HttpPost("Editar/{id:int}")]
+  [Authorize, HttpPost("Comentario/Editar/{id:int}")]
   [ValidateAntiForgeryToken]
   public async Task<IActionResult> Editar(int postId, int id, ComentarioVm model)
   {
@@ -53,22 +66,16 @@ public class ComentariosController(
       return BadRequest();
     }
 
-    await comentarioService.AlterarItemAsync(model,id);
-    return RedirectToAction("Visualizar", "Posts", new { Id = postId });
+    await service.AlterarItemAsync(model,id);
+    return RedirectToAction("Visualizar", "Comentarios", new { postId });
   }
 
 
-  [Authorize, HttpPost("Excluir/{id:int}")]
+
+  [Authorize, HttpPost("Comentario/Excluir/{id:int}")]
   public ActionResult Excluir(int postId, int id)
   {
-    try
-    {
-      comentarioService.ExluirItemAsync(id);
-      return RedirectToAction("Visualizar", "Posts", new { Id = postId });
-    }
-    catch
-    {
-      return BadRequest();
-    }
+    service.ExluirComentarioAsync(id);
+    return Ok();
   }
 }

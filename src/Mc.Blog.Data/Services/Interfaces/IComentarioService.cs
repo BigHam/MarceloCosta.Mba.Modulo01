@@ -7,5 +7,6 @@ namespace Mc.Blog.Data.Services.Interfaces;
 
 public interface IComentarioService : IServiceBase<ComentarioVm>
 {
-  Task<ObjectResult> ListarTodosAsync(int idPost);
+  Task<PostVm> VisualizarPostAsync(int idPost);
+  Task<ObjectResult> ExluirComentarioAsync(int id);
 }

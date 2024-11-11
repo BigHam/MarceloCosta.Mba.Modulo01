@@ -3,7 +3,6 @@
 using AutoMapper;
 
 using Mc.Blog.Data.Data;
-using Mc.Blog.Data.Data.Domains;
 using Mc.Blog.Data.Data.Domains.Base;
 using Mc.Blog.Data.Data.ViewModels.Base;
 using Mc.Blog.Data.Services.Interfaces;
@@ -17,20 +16,11 @@ using Newtonsoft.Json;
 
 namespace Mc.Blog.Data.Services.Implementations.Base;
 
-public abstract class ServiceBase<TDbEntity, TVmEntity> : IServiceBase<TVmEntity> where TDbEntity : BaseDbEntity, new() where TVmEntity : BaseVmEntity, new()
+public abstract class ServiceBase<TDbEntity, TVmEntity>(IMapper mapper, IUserIdentityService userIdentityService, CtxDadosMsSql contexto) : IServiceBase<TVmEntity> where TDbEntity : BaseDbEntity, new() where TVmEntity : BaseVmEntity, new()
 {
-  public IMapper Mapper { get; }
-  public IUserIdentityService UserIdentityService { get; }
-  public CtxDadosMsSql Contexto { get; }
-
-
-  public ServiceBase(IMapper mapper, IUserIdentityService userIdentityService, CtxDadosMsSql contexto)
-  {
-    Mapper = mapper;
-    UserIdentityService = userIdentityService;
-    Contexto = contexto;
-  }
-
+  public IMapper Mapper { get; } = mapper;
+  public IUserIdentityService UserIdentityService { get; } = userIdentityService;
+  public CtxDadosMsSql Contexto { get; } = contexto;
 
   public async virtual Task<ObjectResult> ObterItemAsync(int id)
   {
@@ -93,22 +83,15 @@ public abstract class ServiceBase<TDbEntity, TVmEntity> : IServiceBase<TVmEntity
     if (!UserIdentityService.IsAuthenticate())
       return new Forbidden("Não existe um usuário autenticado.");
 
-    if (!UserIdentityService.IsInRole("Administrador"))
-      return new Forbidden("Voçê não tem permissão para realizar essa ação.");
-
     try
     {
-      var dbModel = await Contexto.GetByIdAsync<TDbEntity>(id);
-      dbModel.Excluido = true;
-      dbModel.ExcluidoEm = DateTime.Now;
-      await Contexto.SalvarAlteracoesAsync();
+      await ExcluirAsync(id);
       return new NoContent();
     }
     catch (Exception ex)
     {
       return new BadRequest($"Não foi possível alterar o post selecionado (Erro: {ex.Message}, InnerException: {ex.InnerException})");
     }
-
   }
 
 
@@ -194,11 +177,10 @@ public abstract class ServiceBase<TDbEntity, TVmEntity> : IServiceBase<TVmEntity
     return Mapper.Map<TDbEntity, TVmEntity>(retorno);
   }
 
-  //internal async Task ExcluirAsync(int id)
-  //{
-  //  var model = await Contexto.GetByIdAsync<TDbEntity>(id);
-  //  await Contexto.DeleteEntityAsync(model);
-  //}
+  internal async Task ExcluirAsync(int id)
+  {
+    await Contexto.DeleteAsync<TDbEntity>(id);
+  }
 }
 
 

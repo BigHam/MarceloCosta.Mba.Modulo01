@@ -46,7 +46,7 @@
   <script>
     function excluirPost(id){
       if (confirm("Voçê deseja excluir o post selecionado?")) {
-        $.post(`/excluir/${id}`, function() { });
+        $.post(`/excluir/${id}`, function() { location.reload(); });
       }
     }
   </script>

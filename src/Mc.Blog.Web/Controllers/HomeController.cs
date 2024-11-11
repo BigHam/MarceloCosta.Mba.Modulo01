@@ -11,7 +11,7 @@ public class HomeController(IPostService service) : Controller
   {
     var abertura = new Abertura
     {
-      Posts = await service.ListarPostsAsync(),
+      Posts = await service.ListarTodosAberturaAsync(),
       Populares = (await service.ListarPostsPopularesAsync()).OrderByDescending(o => o.TotalComentarios).Take(5).ToList(),
     };
 

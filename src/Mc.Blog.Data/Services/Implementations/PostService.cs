@@ -8,6 +8,7 @@ using Mc.Blog.Data.Data.ViewModels;
 using Mc.Blog.Data.Services.Implementations.Base;
 using Mc.Blog.Data.Services.Interfaces;
 
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Mc.Blog.Data.Services.Implementations;
@@ -18,6 +19,11 @@ public class PostService(
   CtxDadosMsSql contexto)
   : ServiceBase<Post, PostVm>(mapper, userIdentityService, contexto), IPostService
 {
+
+  public async Task<List<PostVm>> ListarTodosAberturaAsync()
+  {
+    return Mapper.Map<List<PostVm>>(await Contexto.GetDbSet<Post>().Include(i => i.Autor).ToListAsync());
+  }
 
   public async Task<List<PostVm>> ListarPostsAsync()
   {
@@ -31,10 +37,11 @@ public class PostService(
 
   public async Task<List<PostPopularVm>> ListarPostsPopularesAsync()
   {
-    var teste = await Contexto.GetDbSet<Post>()
+    var retorno = await Contexto.GetDbSet<Post>()
       .Include(i => i.Autor)
       .Include(i => i.Comentarios)
-      .Select(s => new PostPopularVm {
+      .Select(s => new PostPopularVm
+      {
         Id = s.Id,
         Titulo = s.Titulo,
         Imagem = s.Imagem,
@@ -44,14 +51,48 @@ public class PostService(
         AutorNome = s.Autor.UserName,
         TotalComentarios = s.Comentarios.Count()
       }).ToListAsync();
-    return teste;
+    return retorno;
   }
 
-  public async Task<PostVm> VisualizarPostAsync(int id)
+  public async Task<List<PostPopularVm>> ListarPostsGerenciarAsync()
   {
-    return Mapper.Map<PostVm>(await Contexto.GetDbSet<Post>().AsQueryable()
+    var consulta = Contexto.GetDbSet<Post>()
       .Include(i => i.Autor)
-      .Include(i => i.Comentarios).ThenInclude(i => i.Autor)
-      .FirstOrDefaultAsync(c => c.Id == id));
+      .Include(i => i.Comentarios)
+      .AsQueryable();
+
+    if (UserIdentityService.IsInRole("Usuario"))
+      consulta = consulta.Where(c => c.AutorId == UserIdentityService.GetUserId());
+
+    return await consulta.Select(s => new PostPopularVm
+    {
+      Id = s.Id,
+      Titulo = s.Titulo,
+      Imagem = s.Imagem,
+      CriadoEm = s.CriadoEm,
+      AlteradoEm = s.AlteradoEm,
+      AutorId = s.AutorId,
+      AutorNome = s.Autor.UserName,
+      TotalComentarios = s.Comentarios.Count()
+    }).ToListAsync();
+  }
+
+  public async Task<ObjectResult> CriarPostAsync(PostVm model)
+  {
+    if (!UserIdentityService.IsAuthenticate())
+      return new Forbidden("Não existe um usuário autenticado.");
+
+    if (!UserIdentityService.IsInRole("Administrador") && !UserIdentityService.IsInRole("Usuario"))
+      return new Forbidden("Voçê não tem permissão para realizar essa ação.");
+
+    try
+    {
+      model.AutorId = UserIdentityService.GetUserId();
+      return new Created(await AppendAndSaveAsync(model));
+    }
+    catch (Exception ex)
+    {
+      return new BadRequest($"Não foi possível registrar o post informado (Erro: {ex.Message}, InnerException: {ex.InnerException})");
+    }
   }
 }

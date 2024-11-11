@@ -143,12 +143,11 @@ public class CtxDadosMsSql(IConfiguration configuration) : IdentityDbContext<Aut
     return model;
   }
 
-  public virtual async Task Excluir<T>(int id) where T : BaseDbEntity
+  public virtual async Task DeleteAsync<T>(int id) where T : BaseDbEntity
   {
-    var objeto = await Set<T>().AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
+    var objeto = await Set<T>().FindAsync(id);
     objeto.Excluido = true;
     objeto.ExcluidoEm = DateTime.Now;
-    Entry(objeto).State = EntityState.Modified;
     await SalvarAlteracoesAsync();
   }
 }

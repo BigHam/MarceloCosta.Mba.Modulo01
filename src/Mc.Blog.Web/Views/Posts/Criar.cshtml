@@ -4,7 +4,7 @@
 }
 
 <div class="container">
-  <form asp-action="Criar" autocomplete="off">
+  <form asp-controller="Posts" asp-action="Criar" autocomplete="off">
     <div class="clearfix my-3">
       <a asp-area="" asp-controller="Posts" asp-action="Gerenciar" class="btn btn-success float-start btn-w-padrao">< VOLTAR</a>
       <input type="submit" value="GRAVAR" class="btn btn-success float-end btn-w-padrao" />
@@ -12,7 +12,6 @@
 
     <h2 class="my-2">Novo Post</h2>
     <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-    <input type="hidden" asp-for="Id" />
 
     <div class="form-group mb-3">
       <label asp-for="Titulo" class="form-label"></label>

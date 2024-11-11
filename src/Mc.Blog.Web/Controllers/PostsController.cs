@@ -8,17 +8,10 @@ namespace Mc.Blog.Web.Controllers;
 
 public class PostsController(IPostService service) : Controller
 {
-  [HttpGet("Visualizar/{id:int}")]
-  public async Task<IActionResult> Visualizar(int id)
-  {
-    return View(await service.VisualizarPostAsync(id));
-  }
-
-
   [Authorize, HttpGet("Gerenciar")]
   public async Task<IActionResult> Gerenciar()
   {
-    return View(await service.ListarPostsPopularesAsync());
+    return View(await service.ListarPostsGerenciarAsync());
   }
 
 
@@ -36,9 +29,8 @@ public class PostsController(IPostService service) : Controller
     {
       return View(model);
     }
-
-    await service.CriarItemAsync(model);
-    return RedirectToAction("Index");
+    await service.CriarPostAsync(model);
+    return RedirectToAction("Gerenciar","Posts");
   }
 
 
@@ -68,10 +60,9 @@ public class PostsController(IPostService service) : Controller
   }
 
   [Authorize, HttpPost("excluir/{id:long}")]
-  //[ValidateAntiForgeryToken]
   public async Task<IActionResult> Excluir(int id)
   {
     await service.ExluirItemAsync(id);
-    return RedirectToAction("Gerenciar","Posts");
+    return Ok();
   }
 }

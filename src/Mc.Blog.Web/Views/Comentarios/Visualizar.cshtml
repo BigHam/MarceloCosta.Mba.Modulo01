@@ -39,10 +39,12 @@
           <div class="card-body">
             <p class="card-text">@comentario.Conteudo</p>
           </div>
-          <div class="card-footer">
-            <a class="btn btn-sm btn-danger float-end" title="Excluir" onclick="excluirComentario(@comentario.PostId, @comentario.Id)"><i class="bi bi-trash"></i></a>
-            <a asp-area="" asp-controller="Comentarios" asp-action="Editar" asp-route-postId="@comentario.PostId" asp-route-id="@comentario.Id" class="btn btn-sm btn-warning mx-2 float-end" title="Editar"><i class="bi bi-pencil"></i></a>
-          </div>
+          @if (@Model.EditarComentarios){
+            <div class="card-footer">
+              <a class="btn btn-sm btn-danger float-end" title="Excluir" onclick="excluirComentario(@comentario.PostId, @comentario.Id)"><i class="bi bi-trash"></i></a>
+              <a asp-area="" asp-controller="Comentarios" asp-action="Editar" asp-route-postId="@comentario.PostId" asp-route-id="@comentario.Id" class="btn btn-sm btn-warning mx-2 float-end" title="Editar"><i class="bi bi-pencil"></i></a>
+            </div>
+          }
         </div>
       }
     </div>
@@ -57,7 +59,7 @@
   <script>
     function excluirComentario(postId, id){
       if (confirm("Voçê deseja excluir o comentário selecionado?")) {
-        $.post(`/visualizar/${postId}/comentario/excluir/${id}`, function() { alert( "success" ); });
+        $.post(`/visualizar/${postId}/comentario/excluir/${id}`, function() { location.reload(); } );
       }
     }
   </script>

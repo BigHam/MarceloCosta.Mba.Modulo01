@@ -23,6 +23,8 @@ public class PostVm : BaseVmEntity
   public string Imagem { get; set; }
   public int AutorId { get; set; }
   public string Resumo => GetResumo();
+  public bool EditarComentarios { get; set; }
+
 
 
   public virtual AutorVm Autor { get; set; }
@@ -32,6 +34,6 @@ public class PostVm : BaseVmEntity
 
   private string GetResumo()
   {
-    return $"{Conteudo[..99]}[..]";
+    return Conteudo.Length > 100 ? $"{Conteudo[..99]}[..]" :Conteudo;
   }
 }
