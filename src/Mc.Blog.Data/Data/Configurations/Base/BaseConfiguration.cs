@@ -14,7 +14,7 @@ public abstract class BaseConfiguration<TBaseDbEntity> : IEntityTypeConfiguratio
     // Filtro Global ************************************
     // Defina aqui seu filtro global
     builder.HasQueryFilter(c => !c.Excluido);
-    // **************************************************
+
 
     ConfigureEntity(builder);
 
@@ -28,8 +28,6 @@ public abstract class BaseConfiguration<TBaseDbEntity> : IEntityTypeConfiguratio
 
   private void ConfigureEntityInternal(EntityTypeBuilder<TBaseDbEntity> builder)
   {
-    //const string tabela = TableName;
-
     builder.ToTable(TableName);
 
     builder.Property(e => e.Id)

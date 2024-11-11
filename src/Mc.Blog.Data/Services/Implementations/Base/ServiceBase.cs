@@ -3,6 +3,7 @@
 using AutoMapper;
 
 using Mc.Blog.Data.Data;
+using Mc.Blog.Data.Data.Domains;
 using Mc.Blog.Data.Data.Domains.Base;
 using Mc.Blog.Data.Data.ViewModels.Base;
 using Mc.Blog.Data.Services.Interfaces;
@@ -97,16 +98,10 @@ public abstract class ServiceBase<TDbEntity, TVmEntity> : IServiceBase<TVmEntity
 
     try
     {
-      var item = await GetByIdAsync(id);
-
-      if (item == null)
-        return new BadRequest("Item não encontardo");
-
-      item.AlteradoEm = DateTime.Now;
-      item.Excluido = true;
-      item.ExcluidoEm = DateTime.Now;
-
-      await UpdateAndSaveAsync(item, id);
+      var dbModel = await Contexto.GetByIdAsync<TDbEntity>(id);
+      dbModel.Excluido = true;
+      dbModel.ExcluidoEm = DateTime.Now;
+      await Contexto.SalvarAlteracoesAsync();
       return new NoContent();
     }
     catch (Exception ex)

@@ -32,7 +32,7 @@
             <td class="text-center"><h5><spam class="badge bg-info rounded-pill"> @post.TotalComentarios </spam></h5></td>
             <td class="text-center">
               <a asp-action="Editar" asp-route-id="@post.Id" class="btn btn-sm btn-warning mx-1" title="Editar"><i class="bi bi-pencil"></i></a>
-              <a asp-action="Delete" asp-route-id="@post.Id" class="btn btn-sm btn-danger" title="Excluir"><i class="bi bi-trash"></i></a>
+              <a class="btn btn-sm btn-danger" title="Excluir" onclick="excluirPost(@post.Id)"><i class="bi bi-trash"></i></a>
             </td>
           </tr>
         }
@@ -40,3 +40,14 @@
     </table>
   </div>
 </div>
+
+
+@section Scripts {
+  <script>
+    function excluirPost(id){
+      if (confirm("Voçê deseja excluir o post selecionado?")) {
+        $.post(`/excluir/${id}`, function() { });
+      }
+    }
+  </script>
+}

@@ -76,13 +76,13 @@ public class CtxDadosMsSql(IConfiguration configuration) : IdentityDbContext<Aut
 
   public virtual IQueryable<T> GetQueryable<T>() where T : BaseDbEntity
   {
-    return Set<T>().AsQueryable();
+    return Set<T>().AsQueryable().Where(c => !c.Excluido);
   }
 
   public virtual async Task<T> GetByIdAsync<T>(int id) where T : BaseDbEntity
   {
     //return await Set<T>().FindAsync(id);
-    return await Set<T>().AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
+    return await GetQueryable<T>().AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
   }
 
   public virtual async Task<T> GetFirstByPredicateAsync<T>(Expression<Func<T, bool>> predicado) where T : BaseDbEntity
@@ -143,12 +143,12 @@ public class CtxDadosMsSql(IConfiguration configuration) : IdentityDbContext<Aut
     return model;
   }
 
-  //public virtual async Task DeleteEntityAsync<T>(T model) where T : BaseDbEntity
-  //{
-  //  model.Excluido = true;
-  //  model.ExcluidoEm = DateTime.Now;
-  //  Entry(model).State = EntityState.Modified;
-  //  await SalvarAlteracoesAsync();
-  //}
-
+  public virtual async Task Excluir<T>(int id) where T : BaseDbEntity
+  {
+    var objeto = await Set<T>().AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
+    objeto.Excluido = true;
+    objeto.ExcluidoEm = DateTime.Now;
+    Entry(objeto).State = EntityState.Modified;
+    await SalvarAlteracoesAsync();
+  }
 }
