@@ -40,14 +40,11 @@
             <p class="card-text">@comentario.Conteudo</p>
           </div>
           <div class="card-footer">
-            <a asp-area="" asp-controller="Comentarios" asp-action="Delete" asp-route-postId="@comentario.PostId" asp-route-id="@comentario.Id" class="btn btn-sm btn-danger float-end" title="Excluir"><i class="bi bi-trash"></i></a>
+            <a class="btn btn-sm btn-danger float-end" title="Excluir" onclick="excluirComentario(@comentario.PostId, @comentario.Id)"><i class="bi bi-trash"></i></a>
             <a asp-area="" asp-controller="Comentarios" asp-action="Editar" asp-route-postId="@comentario.PostId" asp-route-id="@comentario.Id" class="btn btn-sm btn-warning mx-2 float-end" title="Editar"><i class="bi bi-pencil"></i></a>
           </div>
         </div>
       }
-
-@*       <partial name="_NovoComentarioPartial" model="new ComentarioVm { PostId = Model.Id }" />
- *@
     </div>
   </div>
 </div>
@@ -56,4 +53,12 @@
   @{
     await Html.RenderPartialAsync("_ValidationScriptsPartial");
   }
+
+  <script>
+    function excluirComentario(postId, id){
+      if (confirm("Voçê deseja excluir o comentário selecionado?")) {
+        $.post(`/visualizar/${postId}/comentario/excluir/${id}`, function() { alert( "success" ); });
+      }
+    }
+  </script>
 }

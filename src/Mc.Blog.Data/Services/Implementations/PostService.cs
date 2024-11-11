@@ -2,15 +2,12 @@
 
 using AutoMapper;
 
-using IdentityModel;
-
 using Mc.Blog.Data.Data;
 using Mc.Blog.Data.Data.Domains;
 using Mc.Blog.Data.Data.ViewModels;
 using Mc.Blog.Data.Services.Implementations.Base;
 using Mc.Blog.Data.Services.Interfaces;
 
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Mc.Blog.Data.Services.Implementations;
@@ -18,8 +15,10 @@ namespace Mc.Blog.Data.Services.Implementations;
 public class PostService(
   IMapper mapper,
   IUserIdentityService userIdentityService,
-  CtxDadosMsSql contexto) : ServiceBase<Post, PostVm>(mapper, userIdentityService, contexto), IPostService
+  CtxDadosMsSql contexto)
+  : ServiceBase<Post, PostVm>(mapper, userIdentityService, contexto), IPostService
 {
+
   public async Task<List<PostVm>> ListarPostsAsync()
   {
     var consulta = Contexto.GetDbSet<Post>().Include(i => i.Autor).AsQueryable();

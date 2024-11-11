@@ -12,11 +12,10 @@ namespace Mc.Blog.Data.Services.Implementations;
 
 public class ComentarioService(
   IMapper mapper,
-  CtxDadosMsSql contexto,
-  IUserIdentityService userIdentityService
-  ) : ServiceBase<Comentario, ComentarioVm>(mapper, userIdentityService, contexto), IComentarioService
+  IUserIdentityService userIdentityService,
+  CtxDadosMsSql contexto)
+  : ServiceBase<Comentario, ComentarioVm>(mapper, userIdentityService, contexto), IComentarioService
 {
-
   public async virtual Task<ObjectResult> ListarTodosAsync(int idPost)
   {
     return new Ok(await ListAllByPredicateAsync(c => c.PostId == idPost));

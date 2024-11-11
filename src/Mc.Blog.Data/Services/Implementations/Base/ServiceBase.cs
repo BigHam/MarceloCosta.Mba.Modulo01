@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Mc.Blog.Data.Services.Implementations.Base;
 
@@ -68,7 +67,7 @@ public abstract class ServiceBase<TDbEntity, TVmEntity> : IServiceBase<TVmEntity
     }
   }
 
-  public async virtual Task<ObjectResult> AlterarItemAsync(TVmEntity model, params object[] keyValues)
+  public async virtual Task<ObjectResult> AlterarItemAsync(TVmEntity model, int id)
   {
     if (!UserIdentityService.IsAuthenticate())
       return new Forbidden("Não existe um usuário autenticado.");
@@ -78,7 +77,7 @@ public abstract class ServiceBase<TDbEntity, TVmEntity> : IServiceBase<TVmEntity
 
     try
     {
-      await UpdateAndSaveAsync(model, keyValues);
+      await UpdateAndSaveAsync(model, id);
       return new NoContent();
     }
     catch (Exception ex)
@@ -88,7 +87,7 @@ public abstract class ServiceBase<TDbEntity, TVmEntity> : IServiceBase<TVmEntity
   }
 
 
-  public async virtual Task<ObjectResult> ExluirItemAsync(params object[] keyValues)
+  public async virtual Task<ObjectResult> ExluirItemAsync(int id)
   {
     if (!UserIdentityService.IsAuthenticate())
       return new Forbidden("Não existe um usuário autenticado.");
@@ -98,7 +97,16 @@ public abstract class ServiceBase<TDbEntity, TVmEntity> : IServiceBase<TVmEntity
 
     try
     {
-      await DeleteLogicallyAsync(keyValues);
+      var item = await GetByIdAsync(id);
+
+      if (item == null)
+        return new BadRequest("Item não encontardo");
+
+      item.AlteradoEm = DateTime.Now;
+      item.Excluido = true;
+      item.ExcluidoEm = DateTime.Now;
+
+      await UpdateAndSaveAsync(item, id);
       return new NoContent();
     }
     catch (Exception ex)
@@ -109,9 +117,9 @@ public abstract class ServiceBase<TDbEntity, TVmEntity> : IServiceBase<TVmEntity
   }
 
 
-  internal TVmEntity PopulateViewModel(string values, params object[] keyValues)
+  internal TVmEntity PopulateViewModel(string values, int? id = null)
   {
-    var model = keyValues == null ? new TVmEntity() : GetByIdAsync(keyValues).Result;
+    var model = id == null ? new TVmEntity() : GetByIdAsync(id.GetValueOrDefault()).Result;
     JsonConvert.PopulateObject(values, model);
     return model;
   }
@@ -122,9 +130,9 @@ public abstract class ServiceBase<TDbEntity, TVmEntity> : IServiceBase<TVmEntity
     return retorno;
   }
 
-  internal async Task<TVmEntity> GetByIdAsync(params object[] keyValues)
+  internal async Task<TVmEntity> GetByIdAsync(int id)
   {
-    return Mapper.Map<TVmEntity>(await Contexto.GetByIdAsync<TDbEntity>(keyValues));
+    return Mapper.Map<TVmEntity>(await Contexto.GetByIdAsync<TDbEntity>(id));
   }
 
   internal async Task<TVmEntity> GetByPredicateAsync(Expression<Func<TVmEntity, bool>> predicado)
@@ -142,14 +150,14 @@ public abstract class ServiceBase<TDbEntity, TVmEntity> : IServiceBase<TVmEntity
     await Contexto.AppendEntityAsync(Mapper.Map<TDbEntity>(modelVm));
   }
 
-  internal async Task UpdateAsync(string values, params object[] keyValues)
+  internal async Task UpdateAsync(string values, int id)
   {
-    Contexto.UpdateEntity(Mapper.Map(PopulateViewModel(values, keyValues), await Contexto.GetByIdAsync<TDbEntity>(keyValues)));
+    Contexto.UpdateEntity(Mapper.Map(PopulateViewModel(values, id), await Contexto.GetByIdAsync<TDbEntity>(id)));
   }
 
-  internal async Task UpdateAsync(TVmEntity modelVm, params object[] keyValues)
+  internal async Task UpdateAsync(TVmEntity modelVm, int id)
   {
-    Contexto.UpdateEntity(Mapper.Map(modelVm, await Contexto.GetByIdAsync<TDbEntity>(keyValues)));
+    Contexto.UpdateEntity(Mapper.Map(modelVm, await Contexto.GetByIdAsync<TDbEntity>(id)));
   }
 
   internal async Task SalvarAlteracoesAsync()
@@ -179,23 +187,23 @@ public abstract class ServiceBase<TDbEntity, TVmEntity> : IServiceBase<TVmEntity
     return Mapper.Map<TDbEntity, TVmEntity>(retorno);
   }
 
-  internal async Task<TVmEntity> UpdateAndSaveAsync(string values, params object[] keyValues)
+  internal async Task<TVmEntity> UpdateAndSaveAsync(string values, int id)
   {
-    var retorno = await Contexto.UpdateAndSaveEntityAsync(Mapper.Map(PopulateViewModel(values, keyValues), await Contexto.GetByIdAsync<TDbEntity>(keyValues)));
+    var retorno = await Contexto.UpdateAndSaveEntityAsync(Mapper.Map(PopulateViewModel(values, id), await Contexto.GetByIdAsync<TDbEntity>(id)));
     return Mapper.Map<TDbEntity, TVmEntity>(retorno);
   }
 
-  internal async Task<TVmEntity> UpdateAndSaveAsync(TVmEntity modelVm, params object[] keyValues)
+  internal async Task<TVmEntity> UpdateAndSaveAsync(TVmEntity modelVm, int id)
   {
-    var retorno = await Contexto.UpdateAndSaveEntityAsync(Mapper.Map(modelVm, await Contexto.GetByIdAsync<TDbEntity>(keyValues)));
+    var retorno = await Contexto.UpdateAndSaveEntityAsync(Mapper.Map(modelVm, await Contexto.GetByIdAsync<TDbEntity>(id)));
     return Mapper.Map<TDbEntity, TVmEntity>(retorno);
   }
 
-  internal async Task DeleteLogicallyAsync(params object[] keyValues) 
-  {
-    await Contexto.DeleteEntityAsync(await Contexto.GetByIdAsync<TDbEntity>(keyValues));
-    await SalvarAlteracoesAsync();
-  }
+  //internal async Task ExcluirAsync(int id)
+  //{
+  //  var model = await Contexto.GetByIdAsync<TDbEntity>(id);
+  //  await Contexto.DeleteEntityAsync(model);
+  //}
 }
 
 

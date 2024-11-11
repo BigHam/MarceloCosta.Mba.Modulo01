@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Mc.Blog.Web.Controllers;
 
-[Route("Visualizar/Post/{postId:int}/Comentario")]
+[Route("Visualizar/{postId:int}/Comentario")]
 public class ComentariosController(
   IComentarioService comentarioService,
   IUserIdentityService userIdentityService) : Controller
@@ -58,28 +58,17 @@ public class ComentariosController(
   }
 
 
-
-  //// GET: TesteController/Delete/5
-  //public ActionResult Delete(int id)
-  //{
-  //  return View();
-  //}
-
-  //// POST: TesteController/Delete/5
-  //[HttpPost]
-  //[ValidateAntiForgeryToken]
-  //public ActionResult Delete(int id, IFormCollection collection)
-  //{
-  //  try
-  //  {
-  //    return RedirectToAction(nameof(Index));
-  //  }
-  //  catch
-  //  {
-  //    return View();
-  //  }
-  //}
-
-
-
+  [Authorize, HttpPost("Excluir/{id:int}")]
+  public ActionResult Excluir(int postId, int id)
+  {
+    try
+    {
+      comentarioService.ExluirItemAsync(id);
+      return RedirectToAction("Visualizar", "Posts", new { Id = postId });
+    }
+    catch
+    {
+      return BadRequest();
+    }
+  }
 }

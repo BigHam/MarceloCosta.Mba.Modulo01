@@ -29,7 +29,7 @@
             <td>@post.Titulo</td>
             <td>@post.AutorNome</td>
             <td class="text-center"> @post.AlteradoEm?.ToShortDateString()</td>
-            <td class="text-center"><spam class="badge bg-info rounded-pill"> @post.TotalComentarios </spam></td>
+            <td class="text-center"><h5><spam class="badge bg-info rounded-pill"> @post.TotalComentarios </spam></h5></td>
             <td class="text-center">
               <a asp-action="Editar" asp-route-id="@post.Id" class="btn btn-sm btn-warning mx-1" title="Editar"><i class="bi bi-pencil"></i></a>
               <a asp-action="Delete" asp-route-id="@post.Id" class="btn btn-sm btn-danger" title="Excluir"><i class="bi bi-trash"></i></a>

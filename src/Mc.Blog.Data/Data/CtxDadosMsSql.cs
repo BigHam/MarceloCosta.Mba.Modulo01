@@ -1,6 +1,5 @@
 ﻿using System.Linq.Expressions;
 
-using Mc.Blog.Data.Data.Configurations;
 using Mc.Blog.Data.Data.Domains;
 using Mc.Blog.Data.Data.Domains.Base;
 
@@ -12,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 namespace Mc.Blog.Data.Data;
 
 //IdentityDbContext<Usuario, Role, int, UsuarioClaim, UsuarioRole, UsuarioLogin, RoleClaim, UsuarioToken>()
-public class CtxDadosMsSql(IConfiguration configuration) : IdentityDbContext<Autor,IdentityRole<int>,int>()
+public class CtxDadosMsSql(IConfiguration configuration) : IdentityDbContext<Autor, IdentityRole<int>, int>()
 {
   //public DbSet<Usuario> UsuariosDb { get; set; }
   //public DbSet<UsuarioClaim> UsuariosClaimsDb { get; set; }
@@ -80,14 +79,15 @@ public class CtxDadosMsSql(IConfiguration configuration) : IdentityDbContext<Aut
     return Set<T>().AsQueryable();
   }
 
-  public virtual async Task<T> GetByIdAsync<T>(params object[] keyValues) where T : BaseDbEntity
+  public virtual async Task<T> GetByIdAsync<T>(int id) where T : BaseDbEntity
   {
-    return await Set<T>().FindAsync(keyValues);
+    //return await Set<T>().FindAsync(id);
+    return await Set<T>().AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
   }
 
   public virtual async Task<T> GetFirstByPredicateAsync<T>(Expression<Func<T, bool>> predicado) where T : BaseDbEntity
   {
-    return await Set<T>().FirstOrDefaultAsync(predicado);
+    return await Set<T>().AsNoTracking().FirstOrDefaultAsync(predicado);
   }
 
   public virtual async Task<IList<T>> ListAllAsync<T>() where T : BaseDbEntity
@@ -143,12 +143,12 @@ public class CtxDadosMsSql(IConfiguration configuration) : IdentityDbContext<Aut
     return model;
   }
 
-  public virtual async Task DeleteEntityAsync<T>(T model) where T : BaseDbEntity
-  {
-    Entry(model).State = EntityState.Modified;
-    model.Excluido = true;
-    model.ExcluidoEm = DateTime.Now;
-    await SalvarAlteracoesAsync();
-  }
+  //public virtual async Task DeleteEntityAsync<T>(T model) where T : BaseDbEntity
+  //{
+  //  model.Excluido = true;
+  //  model.ExcluidoEm = DateTime.Now;
+  //  Entry(model).State = EntityState.Modified;
+  //  await SalvarAlteracoesAsync();
+  //}
 
 }

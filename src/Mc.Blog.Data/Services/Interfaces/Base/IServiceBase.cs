@@ -17,6 +17,6 @@ public interface IServiceBase<TVmEntity> where TVmEntity : BaseVmEntity
   Task<ObjectResult> ListarTodosAsync();
 
   Task<ObjectResult> CriarItemAsync(TVmEntity model);
-  Task<ObjectResult> AlterarItemAsync(TVmEntity model, params object[] keyValues);
-  Task<ObjectResult> ExluirItemAsync(params object[] keyValues);
+  Task<ObjectResult> AlterarItemAsync(TVmEntity model, int id);
+  Task<ObjectResult> ExluirItemAsync(int id);
 }

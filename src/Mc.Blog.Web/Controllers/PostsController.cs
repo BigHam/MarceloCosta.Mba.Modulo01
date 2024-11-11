@@ -67,36 +67,16 @@ public class PostsController(IPostService service) : Controller
     return RedirectToAction("Gerenciar", "Posts");
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  [Authorize, HttpGet("excluir/{id:int}")]
-  public async Task<IActionResult> Delete(int id)
-  {
-    return View((await service.ObterItemAsync(id)).Value);
-  }
+  //[Authorize, HttpGet("excluir/{id:int}")]
+  //public async Task<IActionResult> Delete(int id)
+  //{
+  //  return View((await service.ObterItemAsync(id)).Value);
+  //}
 
 
   [Authorize, HttpPost("excluir/{id:long}")]
-  [ValidateAntiForgeryToken]
-  public async Task<IActionResult> DeleteConfirmed(long id)
+  //[ValidateAntiForgeryToken]
+  public async Task<IActionResult> DeleteConfirmed(int id)
   {
     await service.ExluirItemAsync(id);
     return RedirectToAction("Index");
