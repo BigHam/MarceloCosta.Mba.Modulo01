@@ -12,11 +12,11 @@ public class ComentarioController(IComentarioService comentarioService) : Contro
 {
   private readonly IComentarioService _service = comentarioService;
 
-  [HttpGet]
-  public async Task<ActionResult<List<ComentarioVm>>> ListarComentarios(int postId)
-  {
-    return await _service.ListarTodosAsync(postId);
-  }
+  //[HttpGet]
+  //public async Task<ActionResult<List<ComentarioVm>>> ListarComentarios(int postId)
+  //{
+  //  return await _service.ListAllByPredicateAsync(c => c.postId);
+  //}
 
   [HttpGet("{id:int}")]
   public async Task<ActionResult<ComentarioVm>> Comentario(int postId, int id)

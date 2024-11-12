@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+
+using AutoMapper;
 
 using Mc.Blog.Data.Data;
 using Mc.Blog.Data.Data.Domains;
@@ -18,9 +20,9 @@ public class ComentarioService(
   : ServiceBase<Comentario, ComentarioVm>(mapper, userIdentityService, contexto), IComentarioService
 {
 
-  public async Task<PostVm> VisualizarPostAsync(int idPost)
+  public async Task<PostVm> VisualizarPostComComentariosAsync(int idPost)
   {
-    var post = Mapper.Map<PostVm>(await Contexto.GetDbSet<Post>().AsQueryable()
+    var post = Mapper.Map<PostVm>(await Contexto.Set<Post>().AsQueryable()
       .Include(i => i.Autor)
       .Include(i => i.Comentarios).ThenInclude(i => i.Autor)
       .FirstOrDefaultAsync(c => c.Id == idPost));
@@ -29,24 +31,6 @@ public class ComentarioService(
 
     return post;
   }
-
-  public async Task<ObjectResult> ExluirComentarioAsync(int id)
-  {
-    if (!UserIdentityService.IsAuthenticate())
-      return new Forbidden("Não existe um usuário autenticado.");
-
-    try
-    {
-      await ExcluirAsync(id);
-      return new NoContent();
-    }
-    catch (Exception ex)
-    {
-      return new BadRequest($"Não foi possível alterar o post selecionado (Erro: {ex.Message}, InnerException: {ex.InnerException})");
-    }
-  }
-
-
 
   private bool PermitirEdicao(int idAutor)
   {

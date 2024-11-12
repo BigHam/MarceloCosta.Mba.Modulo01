@@ -102,84 +102,89 @@ public abstract class ServiceBase<TDbEntity, TVmEntity>(IMapper mapper, IUserIde
     return model;
   }
 
-  internal IQueryable<TVmEntity> GetQueryable()
+  internal virtual IQueryable<TVmEntity> GetQueryable()
   {
-    var retorno = Mapper.Map<IQueryable<TVmEntity>>(Contexto.GetDbSet<TDbEntity>().AsQueryable());
-    return retorno;
+    var queryable = Contexto.Set<TDbEntity>().AsQueryable();
+    return Mapper.Map<IQueryable<TVmEntity>>(queryable);
   }
 
-  internal async Task<TVmEntity> GetByIdAsync(int id)
+  internal virtual async Task<TVmEntity> GetByIdAsync(int id)
   {
-    return Mapper.Map<TVmEntity>(await Contexto.GetByIdAsync<TDbEntity>(id));
+    var modelDb = await Contexto.Set<TDbEntity>().FindAsync(id);
+    return Mapper.Map<TVmEntity>(modelDb);
   }
 
-  internal async Task<TVmEntity> GetByPredicateAsync(Expression<Func<TVmEntity, bool>> predicado)
+  internal virtual async Task<TVmEntity> GetByPredicateAsync(Expression<Func<TVmEntity, bool>> predicado)
   {
-    return Mapper.Map<TVmEntity>(await Contexto.Set<TDbEntity>().FirstOrDefaultAsync(Mapper.Map<Expression<Func<TDbEntity, bool>>>(predicado)));
+    var predicadoVm = Mapper.Map<Expression<Func<TDbEntity, bool>>>(predicado);
+    var modelDb = await Contexto.Set<TDbEntity>().FirstOrDefaultAsync();
+    return Mapper.Map<TVmEntity>(modelDb);
   }
 
-  internal async Task AppendAsync(string values)
+  internal virtual async Task AppendAsync(TVmEntity modelVm)
   {
-    await Contexto.AppendEntityAsync(Mapper.Map<TDbEntity>(PopulateViewModel(values)));
+    var modelDb = Mapper.Map<TDbEntity>(modelVm);
+    modelDb.CriadoEm = DateTime.Now;
+    await Contexto.Set<TDbEntity>().AddAsync(modelDb);
   }
 
-  internal async Task AppendAsync(TVmEntity modelVm)
+  internal virtual async Task UpdateAsync(TVmEntity modelVm, int id)
   {
-    await Contexto.AppendEntityAsync(Mapper.Map<TDbEntity>(modelVm));
+    var modelDbOld = await Contexto.Set<TDbEntity>().FindAsync(id);
+    var modelDbNew = Mapper.Map(modelVm, modelDbOld);
+    Contexto.Entry(modelDbNew).State = EntityState.Modified;
+    modelDbNew.AlteradoEm = DateTime.Now;
   }
 
-  internal async Task UpdateAsync(string values, int id)
+  internal virtual async Task SalvarAlteracoesAsync()
   {
-    Contexto.UpdateEntity(Mapper.Map(PopulateViewModel(values, id), await Contexto.GetByIdAsync<TDbEntity>(id)));
+    try
+    {
+      await Contexto.SaveChangesAsync(true);
+    }
+    catch (Exception e)
+    {
+      throw new Exception($"Ocorreu um erro ao tentar gravar os dados. Mensagem: {e.Message}", e.InnerException);
+    }
   }
 
-  internal async Task UpdateAsync(TVmEntity modelVm, int id)
+  internal virtual async Task<List<TVmEntity>> ListAllAsync()
   {
-    Contexto.UpdateEntity(Mapper.Map(modelVm, await Contexto.GetByIdAsync<TDbEntity>(id)));
+    var modelDbList = await GetQueryable().AsNoTracking().ToListAsync();
+    return modelDbList;
   }
 
-  internal async Task SalvarAlteracoesAsync()
+  public async Task<List<TVmEntity>> ListAllByPredicateAsync(Expression<Func<TVmEntity, bool>> predicado)
   {
-    await Contexto.SalvarAlteracoesAsync();
-  }
-
-  internal async Task<List<TVmEntity>> ListAllAsync()
-  {
-    return Mapper.Map<List<TVmEntity>>(await Contexto.ListAllAsync<TDbEntity>());
-  }
-
-  internal async Task<List<TVmEntity>> ListAllByPredicateAsync(Expression<Func<TVmEntity, bool>> predicado)
-  {
-    return Mapper.Map<List<TVmEntity>>(await Contexto.ListAllByPredicateAsync(Mapper.Map<Expression<Func<TDbEntity, bool>>>(predicado)));
-  }
-
-  internal async Task<TVmEntity> AppendAndSaveAsync(string values)
-  {
-    var retorno = await Contexto.AppendAndSaveEntityAsync(Mapper.Map<TDbEntity>(PopulateViewModel(values)));
-    return Mapper.Map<TDbEntity,TVmEntity>(retorno);
+    var modelVmList = await GetQueryable().Where(predicado).ToListAsync();
+    return modelVmList;
   }
 
   internal async Task<TVmEntity> AppendAndSaveAsync(TVmEntity modelVm)
   {
-    var retorno = await Contexto.AppendAndSaveEntityAsync(Mapper.Map<TDbEntity>(modelVm));
-    return Mapper.Map<TDbEntity, TVmEntity>(retorno);
-  }
-
-  internal async Task<TVmEntity> UpdateAndSaveAsync(string values, int id)
-  {
-    var retorno = await Contexto.UpdateAndSaveEntityAsync(Mapper.Map(PopulateViewModel(values, id), await Contexto.GetByIdAsync<TDbEntity>(id)));
-    return Mapper.Map<TDbEntity, TVmEntity>(retorno);
+    var modelDb = Mapper.Map<TDbEntity>(modelVm);
+    modelDb.CriadoEm = DateTime.Now;
+    await Contexto.Set<TDbEntity>().AddAsync(modelDb);
+    await SalvarAlteracoesAsync();
+    return Mapper.Map<TDbEntity, TVmEntity>(modelDb);
   }
 
   internal async Task<TVmEntity> UpdateAndSaveAsync(TVmEntity modelVm, int id)
   {
-    var retorno = await Contexto.UpdateAndSaveEntityAsync(Mapper.Map(modelVm, await Contexto.GetByIdAsync<TDbEntity>(id)));
-    return Mapper.Map<TDbEntity, TVmEntity>(retorno);
+    var modelDbOld = await Contexto.Set<TDbEntity>().FindAsync(id);
+    var modelDbNew = Mapper.Map(modelVm, modelDbOld);
+    Contexto.Entry(modelDbNew).State = EntityState.Modified;
+    modelDbNew.AlteradoEm = DateTime.Now;
+    await SalvarAlteracoesAsync();
+    return Mapper.Map<TDbEntity, TVmEntity>(modelDbNew);
   }
 
   internal async Task ExcluirAsync(int id)
   {
-    await Contexto.DeleteAsync<TDbEntity>(id);
+    var modelDb = await Contexto.Set<TDbEntity>().FindAsync(id);
+    modelDb.Excluido = true;
+    modelDb.ExcluidoEm = DateTime.Now;
+    await SalvarAlteracoesAsync();
   }
 }
 

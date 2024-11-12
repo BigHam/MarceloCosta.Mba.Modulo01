@@ -22,12 +22,12 @@ public class PostService(
 
   public async Task<List<PostVm>> ListarTodosAberturaAsync()
   {
-    return Mapper.Map<List<PostVm>>(await Contexto.GetDbSet<Post>().Include(i => i.Autor).ToListAsync());
+    return Mapper.Map<List<PostVm>>(await Contexto.Set<Post>().Include(i => i.Autor).ToListAsync());
   }
 
   public async Task<List<PostVm>> ListarPostsAsync()
   {
-    var consulta = Contexto.GetDbSet<Post>().Include(i => i.Autor).AsQueryable();
+    var consulta = Contexto.Set<Post>().Include(i => i.Autor).AsQueryable();
 
     if (UserIdentityService.IsInRole("Usuario"))
       consulta = consulta.Where(c => c.AutorId == UserIdentityService.GetUserId());
@@ -37,7 +37,7 @@ public class PostService(
 
   public async Task<List<PostPopularVm>> ListarPostsPopularesAsync()
   {
-    var retorno = await Contexto.GetDbSet<Post>()
+    var retorno = await Contexto.Set<Post>()
       .Include(i => i.Autor)
       .Include(i => i.Comentarios)
       .Select(s => new PostPopularVm
@@ -56,7 +56,7 @@ public class PostService(
 
   public async Task<List<PostPopularVm>> ListarPostsGerenciarAsync()
   {
-    var consulta = Contexto.GetDbSet<Post>()
+    var consulta = Contexto.Set<Post>()
       .Include(i => i.Autor)
       .Include(i => i.Comentarios)
       .AsQueryable();

@@ -15,9 +15,7 @@ public class ComentariosController(
   [HttpGet]
   public async Task<IActionResult> Visualizar(int postId)
   {
-    var teste = await service.VisualizarPostAsync(postId);
-
-    return View(teste);
+    return View(await service.VisualizarPostComComentariosAsync(postId));
   }
 
 
@@ -70,12 +68,10 @@ public class ComentariosController(
     return RedirectToAction("Visualizar", "Comentarios", new { postId });
   }
 
-
-
   [Authorize, HttpPost("Comentario/Excluir/{id:int}")]
-  public ActionResult Excluir(int postId, int id)
+  public async Task<IActionResult> Excluir(int postId, int id)
   {
-    service.ExluirComentarioAsync(id);
+    await service.ExluirItemAsync(id);
     return Ok();
   }
 }
